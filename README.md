@@ -1,4 +1,4 @@
-# exprest4 [![Build Status](https://travis-ci.org/bow-fujita/exprest4.svg?branch=master)](https://travis-ci.org/bow-fujita/exprest4)
+# exprest4 [![Build Status](https://travis-ci.org/bow-fujita/exprest4.svg?branch=master)](https://travis-ci.org/bow-fujita/exprest4) [![Coverage Status](https://coveralls.io/repos/github/bow-fujita/exprest4/badge.svg?branch=master)](https://coveralls.io/github/bow-fujita/exprest4?branch=master)
 
 Yet another RESTful API framework for Express 4.x.
 
