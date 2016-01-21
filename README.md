@@ -24,7 +24,7 @@ module.exports = {
       action: 'list'
     }, {
       action: 'view'
-      path: ':id'
+    , path: ':id'
     }, {
       action: 'create'
     , method: 'post'

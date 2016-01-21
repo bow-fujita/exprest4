@@ -43,5 +43,26 @@ describe('config error', function() {
     done();
   });
 
+  it('unknown method', function(done) {
+    (function() {
+      exprest.route(app, { path: path.join(ctrl_dir, 'unknown_method') });
+    }).should.throw(/Unknown method \"test\" in __exprest\.routes\[0\]\.method/);
+    done();
+  });
+
+  it('no action defined', function(done) {
+    (function() {
+      exprest.route(app, { path: path.join(ctrl_dir, 'no_action_def') });
+    }).should.throw(/No __exprest\.routes\[0\]\.action defined/);
+    done();
+  });
+
+  it('no action implemented', function(done) {
+    (function() {
+      exprest.route(app, { path: path.join(ctrl_dir, 'no_action_imp') });
+    }).should.throw(/No view\(\) implemented/);
+    done();
+  });
+
 });
 
