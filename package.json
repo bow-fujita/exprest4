@@ -33,10 +33,15 @@
     "express": "~4.13.3",
     "should": "~8.1.1",
     "mocha": "~2.3.4",
-    "supertest": "~1.1.0"
+    "supertest": "~1.1.0",
+    "istanbul": "~0.4.2",
+    "mocha-lcov-reporter": "~1.0.0",
+    "coveralls": "~2.11.6"
   },
   "scripts": {
-      "test": "make -C test"
+    "test": "make check",
+    "coverage": "make coverage",
+    "coveralls": "make coveralls"
   },
   "main": "index.js",
   "license": "MIT"
