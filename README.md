@@ -1,4 +1,4 @@
-# exprest4
+# exprest4 [![Build Status](https://travis-ci.org/bow-fujita/exprest4.svg?branch=master)](https://travis-ci.org/bow-fujita/exprest4)
 
 Yet another RESTful API framework for Express 4.x.
 
