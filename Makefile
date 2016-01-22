@@ -13,8 +13,12 @@ all:
 
 -include Makefile.local
 
+TEST_DIR := test
+COVERAGE_DIR := coverage
 NODE_MODULES := node_modules
 REQUIRED_MODULES :=
+
+MOCHA_OPTIONS := --opts $(TEST_DIR)/mocha.opts $(TEST_DIR)/suites
 
 ifeq ($(NO_COVERAGE),yes)
 
@@ -40,25 +44,22 @@ ISTANBUL := $(NODE_MODULES)/istanbul/lib/cli.js
 REQUIRED_MODULES += $(ISTANBUL)
 endif
 
-endif # $(NO_COVERAGE) != yes
-
-ifneq ($(filter coveralls,$(MAKECMDGOALS)),)
+ifeq ($(TRAVIS),true)
 COVERALLS := $(shell which coveralls 2> /dev/null)
 ifeq ($(COVERALLS),)
 COVERALLS := $(NODE_MODULES)/coveralls/bin/coveralls.js
 REQUIRED_MODULES += $(COVERALLS)
 endif
-endif # $(MAKECMDGOALS) == coveralls
+
+ISTANBUL_OPTIONS := --report lcovonly
+LCOV_INFO := $(COVERAGE_DIR)/lcov.info
+endif # $(TRAVIS) == true
+
+endif # $(NO_COVERAGE) != yes
 
 $(REQUIRED_MODULES):
 	npm install
 
-
-TEST_DIR := test
-COVERAGE_DIR := coverage
-LCOV_INFO := $(COVERAGE_DIR)/lcov.info
-
-MOCHA_OPTIONS := --opts $(TEST_DIR)/mocha.opts $(TEST_DIR)/suites
 
 export NODE_ENV := test
 export APP_ROOT := $(CURDIR)
@@ -78,15 +79,16 @@ check: clean showenv | $(REQUIRED_MODULES)
 ifeq ($(NO_COVERAGE),yes)
 	$(MOCHA) $(MOCHA_OPTIONS)
 else
-	$(ISTANBUL) cover $(MOCHA) -- $(MOCHA_OPTIONS)
+	$(ISTANBUL) cover $(MOCHA) $(ISTANBUL_OPTIONS) -- $(MOCHA_OPTIONS)
+ifeq ($(TRAVIS),true)
+	cat $(LCOV_INFO) | $(COVERALLS)
 endif
+endif # $(NO_COVERAGE) != yes
 
 .PHONY: coveralls
 coveralls: showenv clean | $(REQUIRED_MODULES)
-	$(ISTANBUL) cover $(MOCHA) --report lcovonly -- $(MOCHA_OPTIONS)
-	cat $(LCOV_INFO) | $(COVERALLS)
 
 .PHONY: clean
 clean:
-	rm -rf $(COVERAGE_DIR)
+	@rm -rf $(COVERAGE_DIR)
 

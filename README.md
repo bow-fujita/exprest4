@@ -1,7 +1,7 @@
 # exprest4
 
-[![Build Status](https://travis-ci.org/bow-fujita/exprest4.svg?branch=master)](https://travis-ci.org/bow-fujita/exprest4)
-[![Coverage Status](https://coveralls.io/repos/github/bow-fujita/exprest4/badge.svg?branch=master)](https://coveralls.io/github/bow-fujita/exprest4?branch=master)
+[![Build Status][travis-image]][travis-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
 
 Yet another RESTful API framework for [Express](http://expressjs.com/) 4.x.
 
@@ -97,7 +97,7 @@ app.delete('/api/example/:id', example.remove);
 ### route(app[, opts])
 
 `exprest` routes controller modules for `app` which must be an Express instance.
-Each ontroller module implemented in `opts.path` directory will be mapped onto `opts.url`.
+Each controller module implemented in `opts.path` directory will be mapped onto `opts.url`.
 You don't have to code for routing by yourself.
 Just maintain APIs structure as physical directory structure.
 
@@ -122,3 +122,8 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+[travis-image]: https://travis-ci.org/bow-fujita/exprest4.svg?branch=master
+[travis-url]: https://travis-ci.org/bow-fujita/exprest4
+[coveralls-image]: https://coveralls.io/repos/github/bow-fujita/exprest4/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/bow-fujita/exprest4?branch=master)
