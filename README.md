@@ -1,8 +1,12 @@
-# exprest4 [![Build Status](https://travis-ci.org/bow-fujita/exprest4.svg?branch=master)](https://travis-ci.org/bow-fujita/exprest4) [![Coverage Status](https://coveralls.io/repos/github/bow-fujita/exprest4/badge.svg?branch=master)](https://coveralls.io/github/bow-fujita/exprest4?branch=master)
+# exprest4
+
+[![Build Status](https://travis-ci.org/bow-fujita/exprest4.svg?branch=master)](https://travis-ci.org/bow-fujita/exprest4)
+[![Coverage Status](https://coveralls.io/repos/github/bow-fujita/exprest4/badge.svg?branch=master)](https://coveralls.io/github/bow-fujita/exprest4?branch=master)
 
 Yet another RESTful API framework for Express 4.x.
 
-## Install
+
+## Getting started
 
 ```sh
 $ npm install exprest4
@@ -10,10 +14,28 @@ $ npm install exprest4
 
 Note that you have to `npm install express` as well because `exprest4` doesn't install Express 4.x by itself.
 
+Make `controllers` directory and code your Express application.
 
-## Example
+```sh
+$ mkdir controllers
+$ vim app.js
+```
 
-Define a controller module which has the special propety `__exprest` as follow:
+```javascript
+// app.js
+
+var express = require('express')
+  , exprest = require('exprest4')
+  , app = express()
+;
+
+exprest.route(app, { url: '/api' } );
+
+app.listen();
+```
+
+`exprest4` regards each file/directory under the `controllers` directory as a controller module in terms of MVC, and routes everything upon `route()` call.
+Each controller module must have the special propety `__exprest` as follow:
 
 ```javascript
 // controllers/example.js
@@ -40,34 +62,21 @@ module.exports = {
   }
 
 , list: function(req, res) {
-    ...
+    res.status(200).json({ action: 'list' });
   }
 , view: function(req, res) {
-    ...
+    res.status(200).json({ action: 'view', id: req.params.id });
   }
 , create: function(req, res) {
-    ...
+    res.status(200).json({ action: 'create' });
   }
 , update: function(req, res) {
-    ...
+    res.status(200).json({ action: 'update', id: req.params.id });
   }
 , remove: function(req, res) {
-    ...
+    res.status(200).json({ action: 'remove', id: req.params.id });
   }
 };
-```
-
-```javascript
-// app.js
-
-var express = require('express')
-  , exprest = require('exprest4')
-  , app = express()
-;
-
-exprest.route(app, { url: '/api' } );
-
-app.listen();
 ```
 
 The code implemented in `controllers/example.js` is equivalent to the following Express calls:
@@ -82,7 +91,23 @@ app.put('/api/example/:id', example.update);
 app.delete('/api/example/:id', example.remove);
 ```
 
-`exprest4` regards each file/directory under the `controllers` directory as a controller module in terms of MVC, and routes everything upon `route()` call.
+
+## Methods
+
+### route(app[, opts])
+
+`exprest` routes controller modules for `app` which must be an Express instance.
+Each ontroller module implemented in `opts.path` directory will be mapped onto `opts.url`.
+You don't have to code for routing by yourself.
+Just maintain APIs structure as physical directory structure.
+
+If `opts` is omitted, the following options are applied:
+```javascript
+opts = {
+  path: path.join(process.cwd(), 'controllers')
+, url: '/'
+}
+```
 
 
 ## License
