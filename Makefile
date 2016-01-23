@@ -16,6 +16,7 @@ all:
 TEST_DIR := test
 COVERAGE_DIR := coverage
 NODE_MODULES := node_modules
+NODE_MODULES_BIN := $(NODE_MODULES)/.bin
 REQUIRED_MODULES :=
 
 MOCHA_OPTIONS := --opts $(TEST_DIR)/mocha.opts $(TEST_DIR)/suites
@@ -34,20 +35,20 @@ else # $(NO_COVERAGE) != yes
 # https://github.com/gotwarlost/istanbul/issues/44 
 MOCHA := $(shell which _mocha 2> /dev/null)
 ifeq ($(MOCHA),)
-MOCHA := $(NODE_MODULES)/mocha/bin/_mocha
+MOCHA := $(NODE_MODULES_BIN)/_mocha
 REQUIRED_MODULES += $(MOCHA)
 endif
 
 ISTANBUL := $(shell which istanbul 2> /dev/null)
 ifeq ($(ISTANBUL),)
-ISTANBUL := $(NODE_MODULES)/istanbul/lib/cli.js
+ISTANBUL := $(NODE_MODULES_BIN)/istanbul
 REQUIRED_MODULES += $(ISTANBUL)
 endif
 
 ifeq ($(TRAVIS),true)
 COVERALLS := $(shell which coveralls 2> /dev/null)
 ifeq ($(COVERALLS),)
-COVERALLS := $(NODE_MODULES)/coveralls/bin/coveralls.js
+COVERALLS := $(NODE_MODULES_BIN)/coveralls
 REQUIRED_MODULES += $(COVERALLS)
 endif
 

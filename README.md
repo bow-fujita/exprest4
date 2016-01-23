@@ -29,13 +29,13 @@ var express = require('express')
   , app = express()
 ;
 
-exprest.route(app, { url: '/api' } );
+exprest.route(app, { url: '/api' });
 
 app.listen();
 ```
 
 `exprest4` regards each file/directory under the `controllers` directory as a controller module in terms of MVC, and routes everything upon `route()` call.
-Each controller module must have the special propety `__exprest` as follow:
+Each controller module must have the special property `__exprest` as follow:
 
 ```javascript
 // controllers/example.js
@@ -94,7 +94,7 @@ app.delete('/api/example/:id', example.remove);
 
 ## Methods
 
-### route(app[, opts])
+### `route(app[, opts])`
 
 `exprest` routes controller modules for `app` which must be an Express instance.
 Each controller module implemented in `opts.path` directory will be mapped onto `opts.url`.
@@ -108,6 +108,69 @@ opts = {
 , url: '/'
 }
 ```
+
+If you call `route()` once, which means you have only one controller directory, REST API is going to be flat like `/api/<controllers>`.
+
+You can also call `route()` more than once to provide structured REST API.
+For example, if you want to seperate APIs by version like `/api/v1/<controllers>` and `/api/v2/<controllers>`, create two controller directories `controllers/v1` and `controllers/v2`, then call `route()` as follow:
+
+```javascript
+// app.js
+
+var path = require('path')
+  , api_versions = [1, 2]
+  , controllers_dir = path.join(process.cwd(), 'controllers')
+;
+
+api_versions.forEach(function(version) {
+    exprest.route(app, {
+        url: '/api/v'+version
+     , path: path.join(controllers_dir, 'v'+version)
+    });
+});
+```
+
+## `__exprest` Property
+
+### `routes` : Array
+
+Each element is an object which has the following properties:
+
++ **`action`: String [Required]**<br>
+  Function name to be routed.
+
++ **`method`: String [Default: `'get'`]**<br>
+  Request method to be routed.
+
++ **`path`: String [Default: `''`]**<br>
+  Virtual path for this `action`.
+
++ **`middleware`: Function [Default: `undefined`]**<br>
+  Middleware to be passed to Express.
+
+
+`middleware` is typically used for APIs accept file uploading.
+The following example uses [multer](https://github.com/expressjs/multer) as `middleware`:
+
+```javascript
+var multer = require('multer')
+  , upload = multer(/* memory storage */)
+;
+
+module.exports = {
+  __exprest: {
+    routes: [{
+      action: 'echo'
+    , method: 'post'
+    , middleware: upload.single('message')
+    }]
+  }
+
+, echo: function(req, res) {
+    res.status(200).json({ echo: req.file.buffer.toString() });
+  }
+};
+ ```
 
 
 ## License
@@ -126,4 +189,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [travis-image]: https://travis-ci.org/bow-fujita/exprest4.svg?branch=master
 [travis-url]: https://travis-ci.org/bow-fujita/exprest4
 [coveralls-image]: https://coveralls.io/repos/github/bow-fujita/exprest4/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/bow-fujita/exprest4?branch=master)
+[coveralls-url]: https://coveralls.io/github/bow-fujita/exprest4?branch=master
