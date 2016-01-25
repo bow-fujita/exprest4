@@ -1,7 +1,10 @@
 # exprest4
 
+[![NPM Version][npm-version-image]][npm-url]
+[![NPM Downloads][npm-downloads-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
+![License][npm-license-image]
 
 Yet another RESTful API framework for [Express](http://expressjs.com/) 4.x.
 
@@ -185,8 +188,11 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-[travis-image]: https://travis-ci.org/bow-fujita/exprest4.svg?branch=master
+[npm-version-image]: https://img.shields.io/npm/v/exprest4.svg
+[npm-downloads-image]: https://img.shields.io/npm/dm/exprest4.svg
+[npm-license-image]: https://img.shields.io/npm/l/exprest4.svg
+[npm-url]: https://npmjs.org/package/exprest4
+[travis-image]: https://img.shields.io/travis/bow-fujita/exprest4/master.svg
 [travis-url]: https://travis-ci.org/bow-fujita/exprest4
-[coveralls-image]: https://coveralls.io/repos/github/bow-fujita/exprest4/badge.svg?branch=master
+[coveralls-image]: https://img.shields.io/coveralls/bow-fujita/exprest4/master.svg
 [coveralls-url]: https://coveralls.io/github/bow-fujita/exprest4?branch=master
