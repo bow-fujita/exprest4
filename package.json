@@ -1,6 +1,6 @@
 {
   "name": "exprest4",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "REST API framework for Express 4.x.",
   "homepage": "https://github.com/bow-fujita/exprest4",
   "repository": {
@@ -37,6 +37,8 @@
     "mocha-lcov-reporter": "~1.0.0",
     "multer": "~1.1.0",
     "node-inspector": "^0.12.5",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
     "should": "~8.1.1",
     "supertest": "~1.1.0"
   },

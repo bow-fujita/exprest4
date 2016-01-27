@@ -175,6 +175,28 @@ module.exports = {
 };
  ```
 
+Another use case is authentication.
+The following example uses [passport](https://github.com/jaredhanson/passport) as `middleware':
+
+```javascript
+var passport = require('passport')
+;
+
+module.exports = {
+  __exprest: {
+    routes: [{
+      action: 'login'
+    , middleware: passport.authenticate('basic', { session: false })
+    }]
+  }
+
+, login: function(req, res) {
+    res.status(200).json({ loginAs: req.user.username });
+  }
+
+};
+ ```
+
 
 ## License
 
