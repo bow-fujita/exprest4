@@ -19,17 +19,6 @@ NODE_MODULES := node_modules
 NODE_MODULES_BIN := $(NODE_MODULES)/.bin
 REQUIRED_MODULES :=
 
-MOCHA_OPTIONS := --opts $(TEST_DIR)/mocha.opts $(TEST_DIR)/suites
-
-ifeq ($(NO_COVERAGE),yes)
-
-MOCHA := $(shell which mocha 2> /dev/null)
-ifeq ($(MOCHA),)
-MOCHA := $(NODE_MODULES)/mocha/bin/mocha
-REQUIRED_MODULES += $(MOCHA)
-endif
-
-else # $(NO_COVERAGE) != yes
 
 # Use _mocha instead of mocha for istanbul
 # https://github.com/gotwarlost/istanbul/issues/44 
@@ -38,6 +27,11 @@ ifeq ($(MOCHA),)
 MOCHA := $(NODE_MODULES_BIN)/_mocha
 REQUIRED_MODULES += $(MOCHA)
 endif
+
+MOCHA_OPTIONS := --opts $(TEST_DIR)/mocha.opts $(TEST_DIR)/suites
+
+
+ifneq ($(NO_COVERAGE),yes)
 
 ISTANBUL := $(shell which istanbul 2> /dev/null)
 ifeq ($(ISTANBUL),)
@@ -57,6 +51,26 @@ LCOV_INFO := $(COVERAGE_DIR)/lcov.info
 endif # $(TRAVIS) == true
 
 endif # $(NO_COVERAGE) != yes
+
+ifeq ($(MAKECMDGOALS),debug)
+NODE_DEBUG := $(shell which node-debug 2> /dev/null)
+ifeq ($(NODE_DEBUG),)
+NODE_DEBUG := $(NODE_MODULES_BIN)/node-debug
+REQUIRED_MODULES += $(NODE_DEBUG)
+
+NODE_DEBUG_OPTIONS :=
+ifneq ($(NODE_DEBUG_PORT),)
+NODE_DEBUG_OPTIONS += --debug-port $(NODE_DEBUG_PORT)
+endif
+ifneq ($(NODE_DEBUG_WEB_HOST),)
+NODE_DEBUG_OPTIONS += --web-host $(NODE_DEBUG_WEB_HOST)
+endif
+ifneq ($(NODE_DEBUG_WEB_PORT),)
+NODE_DEBUG_OPTIONS += --web-port $(NODE_DEBUG_WEB_PORT)
+endif
+endif # $(MAKECMDGOALS) == debug
+
+endif
 
 $(REQUIRED_MODULES):
 	npm install
@@ -86,8 +100,9 @@ ifeq ($(TRAVIS),true)
 endif
 endif # $(NO_COVERAGE) != yes
 
-.PHONY: coveralls
-coveralls: showenv clean | $(REQUIRED_MODULES)
+.PHONY: debug
+debug: | $(REQUIRED_MODULES)
+	$(NODE_DEBUG) $(NODE_DEBUG_OPTIONS) $(MOCHA) $(MOCHA_OPTIONS)
 
 .PHONY: clean
 clean:
