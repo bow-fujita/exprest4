@@ -100,14 +100,14 @@ app.delete('/api/example/:id', example.remove);
 ### `route(app[, opts])`
 
 `exprest` routes controller modules for `app` which must be an Express instance.
-Each controller module implemented in `opts.path` directory will be mapped onto `opts.url`.
+Each controller module implemented in `opts.controllers` directory will be mapped onto `opts.url`.
 You don't have to code for routing by yourself.
 Just maintain APIs structure as physical directory structure.
 
 If `opts` is omitted, the following options are applied:
 ```javascript
 opts = {
-  path: path.join(process.cwd(), 'controllers')
+  controllers: path.join(process.cwd(), 'controllers')
 , url: '/'
 }
 ```
@@ -127,8 +127,8 @@ var path = require('path')
 
 api_versions.forEach(function(version) {
     exprest.route(app, {
-        url: '/api/v'+version
-     , path: path.join(controllers_dir, 'v'+version)
+      url: '/api/v'+version
+    , controllers: path.join(controllers_dir, 'v'+version)
     });
 });
 ```

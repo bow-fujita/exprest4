@@ -18,7 +18,7 @@ var exprest = require(process.env.APP_ROOT)
 describe('middlewares', function() {
 
   before(function(done) {
-    exprest.route(app, { path: ctrl_dir });
+    exprest.route(app, { controllers: ctrl_dir });
     done();
   });
 

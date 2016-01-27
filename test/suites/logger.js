@@ -27,7 +27,7 @@ describe('logger', function() {
     ;
 
     exprest.route(app, {
-      path: ctrl_dir
+      controllers: ctrl_dir
     , logger: function(msg) {
         actual_logs.push(msg);
       }

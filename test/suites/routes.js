@@ -21,7 +21,7 @@ describe('routes', function() {
   describe('default url', function() {
 
     before(function(done) {
-      exprest.route(app, { path: ctrl_dir });
+      exprest.route(app, { controllers: ctrl_dir });
       done();
     });
 
@@ -89,7 +89,7 @@ describe('routes', function() {
   describe('custom url', function() {
 
     before(function(done) {
-      exprest.route(app, { path: ctrl_dir, url: '/api' });
+      exprest.route(app, { controllers: ctrl_dir, url: '/api' });
       done();
     });
 

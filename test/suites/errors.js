@@ -17,49 +17,49 @@ describe('config error', function() {
 
   it('no __exprest', function(done) {
     (function() {
-      exprest.route(app, { path: path.join(ctrl_dir, 'no_exprest') });
+      exprest.route(app, { controllers: path.join(ctrl_dir, 'no_exprest') });
     }).should.throw(/No __exprest defined/);
     done();
   });
 
   it('invalid __exprest', function(done) {
     (function() {
-      exprest.route(app, { path: path.join(ctrl_dir, 'invalid_exprest') });
+      exprest.route(app, { controllers: path.join(ctrl_dir, 'invalid_exprest') });
     }).should.throw(/Invalid __exprest/);
     done();
   });
 
   it('no routes', function(done) {
     (function() {
-      exprest.route(app, { path: path.join(ctrl_dir, 'no_routes') });
+      exprest.route(app, { controllers: path.join(ctrl_dir, 'no_routes') });
     }).should.throw(/No __exprest\.routes defined/);
     done();
   });
 
   it('invalid routes', function(done) {
     (function() {
-      exprest.route(app, { path: path.join(ctrl_dir, 'invalid_routes') });
+      exprest.route(app, { controllers: path.join(ctrl_dir, 'invalid_routes') });
     }).should.throw(/Invalid __exprest\.routes/);
     done();
   });
 
   it('unknown method', function(done) {
     (function() {
-      exprest.route(app, { path: path.join(ctrl_dir, 'unknown_method') });
+      exprest.route(app, { controllers: path.join(ctrl_dir, 'unknown_method') });
     }).should.throw(/Unknown method \"test\" in __exprest\.routes\[0\]\.method/);
     done();
   });
 
   it('no action defined', function(done) {
     (function() {
-      exprest.route(app, { path: path.join(ctrl_dir, 'no_action_def') });
+      exprest.route(app, { controllers: path.join(ctrl_dir, 'no_action_def') });
     }).should.throw(/No __exprest\.routes\[0\]\.action defined/);
     done();
   });
 
   it('no action implemented', function(done) {
     (function() {
-      exprest.route(app, { path: path.join(ctrl_dir, 'no_action_imp') });
+      exprest.route(app, { controllers: path.join(ctrl_dir, 'no_action_imp') });
     }).should.throw(/No view\(\) implemented/);
     done();
   });
