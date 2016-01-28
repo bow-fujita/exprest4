@@ -148,12 +148,12 @@ Each element is an object which has the following properties:
 + **`path`: String [Default: `''`]**<br>
   Virtual path for this `action`.
 
-+ **`middleware`: Function [Default: `undefined`]**<br>
-  Middleware to be passed to Express.
++ **`middleware`: {Function|Function[]} [Default: `undefined`]**<br>
+  Middleware(s) to be passed to Express.
 
 
 `middleware` is typically used for APIs accept file uploading.
-The following example uses [multer](https://github.com/expressjs/multer) as `middleware`:
+The following example uses [Multer](https://github.com/expressjs/multer) as `middleware`:
 
 ```javascript
 var multer = require('multer')
@@ -176,7 +176,7 @@ module.exports = {
  ```
 
 Another use case is authentication.
-The following example uses [passport](https://github.com/jaredhanson/passport) as `middleware':
+The following example uses [Passport](https://github.com/jaredhanson/passport) as `middleware':
 
 ```javascript
 var passport = require('passport')

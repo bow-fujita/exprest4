@@ -18,12 +18,15 @@ var exprest = require(process.env.APP_ROOT)
 
 describe('middlewares', function() {
 
+  var now_file = 'now.txt'
+    , now_time = (new Date).toString()
+  ;
+
   before(function(done) {
     // Setting up for passport-http
     var BasicStrategy = require('passport-http').BasicStrategy;
     app.use(passport.initialize());
     passport.use(new BasicStrategy(function(user, pass, callback) {
-      console.log('User: '+user);
       if (user != 'admin') {
         return callback(null, false);
       }
@@ -31,18 +34,12 @@ describe('middlewares', function() {
     }));
 
     exprest.route(app, { controllers: ctrl_dir });
-    done();
+
+    // For file upload
+    fs.writeFile(now_file, now_time, done);
   });
 
   describe('multer', function() {
-
-    var now_file = 'now.txt'
-      , now_time = (new Date).toString()
-    ;
-
-    before(function(done) {
-      fs.writeFile(now_file, now_time, done);
-    });
 
     it('POST /multer', function(done) {
       request(app).post('/multer')
@@ -50,10 +47,6 @@ describe('middlewares', function() {
         .expect(200, {
           now: now_time
         }, done);
-    });
-
-    after(function(done) {
-      fs.unlink(now_file, done);
     });
 
   });
@@ -79,6 +72,37 @@ describe('middlewares', function() {
         }, done);
     });
 
+  });
+
+  describe('multiple', function() {
+
+    it('POST /multiple no user => 401 Unauthorized', function(done) {
+      request(app).post('/multiple')
+        .attach('now', now_file)
+        .expect(401, done);
+    });
+
+    it('POST /multiple invalid user => 401 Unauthorized', function(done) {
+      request(app).post('/multiple')
+        .attach('now', now_file)
+        .auth('user', 'x')
+        .expect(401, done);
+    });
+
+    it('POST /multiple valid user => 200 OK', function(done) {
+      request(app).post('/multiple')
+        .attach('now', now_file)
+        .auth('admin', 'x')
+        .expect(200, {
+          loginAs: 'admin'
+        , now: now_time
+        }, done);
+    });
+
+  });
+
+  after(function(done) {
+    fs.unlink(now_file, done);
   });
 
 });
