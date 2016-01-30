@@ -26,14 +26,14 @@ describe('routes', function() {
     });
 
     // Check if routed properly
-    it('GET /user => 200 OK', function(done) {
+    it('GET /user', function(done) {
       request(app).get('/user')
         .expect(200, {
           action: 'list'
         }, done);
     });
 
-    it('GET /user/:id => 200 OK', function(done) {
+    it('GET /user/:id', function(done) {
       request(app).get('/user/1')
         .expect(200, {
           action: 'view'
@@ -41,14 +41,14 @@ describe('routes', function() {
         }, done);
     });
 
-    it('POST /user => 200 OK', function(done) {
+    it('POST /user', function(done) {
       request(app).post('/user')
         .expect(200, {
           action: 'create'
         }, done);
     });
 
-    it('PUT /user/:id => 200 OK', function(done) {
+    it('PUT /user/:id', function(done) {
       request(app).put('/user/1')
         .expect(200, {
           action: 'update'
@@ -56,7 +56,7 @@ describe('routes', function() {
         }, done);
     });
 
-    it('DELETE /user/:id => 200 OK', function(done) {
+    it('DELETE /user/:id', function(done) {
       request(app).delete('/user/1')
         .expect(200, {
           action: 'remove'
@@ -65,23 +65,23 @@ describe('routes', function() {
     });
 
     // Check if 404 error returned upon any other methods than routed
-    it('PUT /user => 404 Not Found', function(done) {
+    it('PUT /user', function(done) {
       request(app).put('/user').expect(404, done);
     });
-    it('DELETE /user => 404 Not Found', function(done) {
+    it('DELETE /user', function(done) {
       request(app).delete('/user').expect(404, done);
     });
-    it('POST /user/:id => 404 Not Found', function(done) {
+    it('POST /user/:id', function(done) {
       request(app).post('/user/1').expect(404, done);
     });
 
     // Check if 404 error returned upon unmatched url
-    it('GET /user/:id/show => 404 Not Found', function(done) {
+    it('GET /user/:id/show', function(done) {
       request(app).get('/user/1/show').expect(404, done);
     });
 
     // Check if 404 error returned before routing /api
-    it('GET /api/user => 404 Not Found', function(done) {
+    it('GET /api/user', function(done) {
       request(app).get('/api/user').expect(404, done);
     });
   });
@@ -133,18 +133,18 @@ describe('routes', function() {
     });
 
     // Check if 404 error returned upon unmatched url
-    it('GET /api/user/:id/show => 404 Not Found', function(done) {
+    it('GET /api/user/:id/show', function(done) {
       request(app).get('/api/user/1/show').expect(404, done);
     });
 
     // Check if 404 error returned for any other methods than routed
-    it('PUT /api/user => 404 Not Found', function(done) {
+    it('PUT /api/user', function(done) {
       request(app).put('/api/user').expect(404, done);
     });
-    it('DELETE /api/user => 404 Not Found', function(done) {
+    it('DELETE /api/user', function(done) {
       request(app).delete('/user').expect(404, done);
     });
-    it('POST /api/user/:id => 404 Not Found', function(done) {
+    it('POST /api/user/:id', function(done) {
       request(app).post('/api/user/1').expect(404, done);
     });
 

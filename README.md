@@ -135,7 +135,7 @@ api_versions.forEach(function(version) {
 
 ## `__exprest` Property
 
-### `routes` : Array
+### `routes` : Array [Required]
 
 Each element is an object which has the following properties:
 
@@ -196,6 +196,45 @@ module.exports = {
 
 };
  ```
+
+### `preset` : Object [Default: `undefined`]
+
+The following properties will be applied to each element in `__routes`:
+
++ **`middleware`: {Function|Function[]} [Default: `undefined`]**<br>
+  Middleware(s) to be passed to Express.
+
+For example, if you want to authenticate users for every action in a controller, you can use `preset.middleware` as follow:
+
+```javascript
+var passport = require('passport')
+  , multer = require('multer')
+  , upload = multer(/* memory storage */)
+;
+
+module.exports = {
+  __exprest: {
+    preset: {
+      middleware: passport.authenticate('basic', { session: false })
+    }
+  , routes: [{
+      action: 'login'
+    }, {
+      action: 'echo'
+    , method: 'post'
+    , middleware: upload.single('message')
+    }]
+  }
+
+, login: function(req, res) {
+    res.status(200).json({ loginAs: req.user.username });
+  }
+
+, echo: function(req, res) {
+    res.status(200).json({ echo: req.file.buffer.toString() });
+  }
+};
+```
 
 
 ## License

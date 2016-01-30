@@ -37,7 +37,8 @@ describe('middlewares', function() {
 
     // For file upload
     fs.writeFile(now_file, now_time, done);
-  });
+
+  }); // before
 
   describe('multer', function() {
 
@@ -49,22 +50,22 @@ describe('middlewares', function() {
         }, done);
     });
 
-  });
+  }); // multer
 
   describe('passport', function() {
 
-    it('GET /passport no user => 401 Unauthorized', function(done) {
+    it('GET /passport no user', function(done) {
       request(app).get('/passport')
         .expect(401, done);
     });
 
-    it('GET /passport invalid user => 401 Unauthorized', function(done) {
+    it('GET /passport invalid user', function(done) {
       request(app).get('/passport')
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('GET /passport valid user => 200 OK', function(done) {
+    it('GET /passport valid user', function(done) {
       request(app).get('/passport')
         .auth('admin', 'x')
         .expect(200, {
@@ -72,25 +73,71 @@ describe('middlewares', function() {
         }, done);
     });
 
-  });
+  }); // passport
 
   describe('multiple', function() {
 
-    it('POST /multiple no user => 401 Unauthorized', function(done) {
+    it('POST /multiple no user', function(done) {
       request(app).post('/multiple')
         .attach('now', now_file)
         .expect(401, done);
     });
 
-    it('POST /multiple invalid user => 401 Unauthorized', function(done) {
+    it('POST /multiple invalid user', function(done) {
       request(app).post('/multiple')
         .attach('now', now_file)
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('POST /multiple valid user => 200 OK', function(done) {
+    it('POST /multiple valid user', function(done) {
       request(app).post('/multiple')
+        .attach('now', now_file)
+        .auth('admin', 'x')
+        .expect(200, {
+          loginAs: 'admin'
+        , now: now_time
+        }, done);
+    });
+
+  }); // multiple
+
+  describe('preset', function() {
+
+    it('GET /preset no user', function(done) {
+      request(app).get('/preset')
+        .expect(401, done);
+    });
+
+    it('GET /preset invalid user', function(done) {
+      request(app).get('/preset')
+        .auth('user', 'x')
+        .expect(401, done);
+    });
+
+    it('GET /preset valid user', function(done) {
+      request(app).get('/preset')
+        .auth('admin', 'x')
+        .expect(200, {
+          loginAs: 'admin'
+        }, done);
+    });
+
+    it('POST /preset no user', function(done) {
+      request(app).post('/preset')
+        .attach('now', now_file)
+        .expect(401, done);
+    });
+
+    it('POST /preset invalid user', function(done) {
+      request(app).post('/preset')
+        .attach('now', now_file)
+        .auth('user', 'x')
+        .expect(401, done);
+    });
+
+    it('POST /preset valid user', function(done) {
+      request(app).post('/preset')
         .attach('now', now_file)
         .auth('admin', 'x')
         .expect(200, {
