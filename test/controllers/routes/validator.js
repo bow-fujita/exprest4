@@ -11,13 +11,12 @@ var validator = require('validator')
 
 module.exports = {
   __exprest: {
-    routes: [{
-      action: 'id'
-    , path: 'id/:id'
-    , validator: {
+    preset: {
+      validator: {
         id: validator.isNumeric
       }
-    }, {
+    }
+  , routes: [{
       action: 'email'
     , path: 'email/:email'
     , validator: {
@@ -29,16 +28,26 @@ module.exports = {
     , validator: {
         name: /^[A-Z]+$/i
       }
+    }, {
+      action: 'preset'
+    , path: 'preset/:id'
+    }, {
+      action: 'preset'
+    , path: 'overwrite/:id'
+    , validator: {
+        id: validator.isAlpha
+      }
     }]
   }
 
-, id: function(req, res) {
-    res.status(200).json({ id: req.params.id });
-  }
 , email: function(req, res) {
     res.status(200).json({ email: req.params.email });
   }
 , regexp: function(req, res) {
     res.status(200).json({ name: req.params.name });
   }
+, preset: function(req, res) {
+    res.status(200).json({ id: req.params.id });
+  }
+
 };

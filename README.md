@@ -4,6 +4,7 @@
 [![NPM Downloads][npm-downloads-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
+[![Dependency Status][david-image]][david-url]
 ![License][npm-license-image]
 
 Yet another RESTful API framework for [Express](http://expressjs.com/) 4.x.
@@ -148,9 +149,111 @@ Each element is an object which has the following properties:
 + **`path`: String [Default: `''`]**<br>
   Virtual path for this `action`.
 
-+ **`middleware`: {Function|Function[]} [Default: `undefined`]**<br>
-  Middleware(s) to be passed to Express.
++ **`validator`: Object [Default: `undefined`]**<br>
+  [Validator(s)](#validator) for placeholders in `path`.
 
++ **`middleware`: {Function|Function[]} [Default: `undefined`]**<br>
+  [Middleware(s)](#middleware) to be passed to Express.
+
+
+### `preset` : Object [Default: `undefined`]
+
+The following properties will be applied to each element in `routes`:
+
++ **`validator`: Object [Default: `undefined`]**<br>
+  [Validator(s)](#validator) for placeholders in each `path`.
+
++ **`middleware`: {Function|Function[]} [Default: `undefined`]**<br>
+  [Middleware(s)](#middleware) to be passed to Express.
+
+
+### Validator
+
+If `routes[].path` contains any placeholders to receive parameters from [`req.params`](http://expressjs.com/en/4x/api.html#req.params) object, `validator` will be helpful to validate parameters before calling `routes[].action`.
+The following example uses [validator.js](https://github.com/chriso/validator.js) as `validator`:
+
+```javascript
+var validator = require('validator')
+;
+
+module.exports = {
+  __exprest: {
+    routes: [{
+      action: 'view'
+    , path: ':id'
+    , validator: {
+        id: validator.isNumeric
+      }
+    }]
+  }
+
+, view: function(req, res) {
+    // `req.params.id` must a number.
+    res.status(200).json({ id: req.params.id });
+  }
+```
+
+You can also use a `RegExp` object instead of a function as follow:
+
+```javascript
+module.exports = {
+  __exprest: {
+    routes: [{
+      action: 'view'
+    , path: ':id'
+    , validator: {
+        id: /^[1-9][0-9]*/
+      }
+    }]
+  }
+
+, view: function(req, res) {
+    // `req.params.id` must a number.
+    res.status(200).json({ id: req.params.id });
+  }
+```
+
+If you have a placeholder commonly used in a controller, you can use `preset.validator` as follow:
+
+```javascript
+var validator = require('validator')
+;
+
+module.exports = {
+  __exprest: {
+    preset: {
+      validator: {
+        id: validator.isNumeric
+      }
+    }
+  , routes: [
+      action: 'view'
+    , path: ':id'
+    }, {
+      action: 'update'
+    , path: ':id'
+    , method: 'put'
+    }, {
+      action: 'remove'
+    , path: ':id'
+    , method: 'delete'
+    }]
+  }
+
+, view: function(req, res) {
+    res.status(200).json({ action: 'view', id: req.params.id });
+  }
+, update: function(req, res) {
+    res.status(200).json({ action: 'update', id: req.params.id });
+  }
+, remove: function(req, res) {
+    res.status(200).json({ action: 'remove', id: req.params.id });
+  }
+};
+```
+
+
+### Middleware
 
 `middleware` is typically used for APIs accept file uploading.
 The following example uses [Multer](https://github.com/expressjs/multer) as `middleware`:
@@ -176,7 +279,7 @@ module.exports = {
  ```
 
 Another use case is authentication.
-The following example uses [Passport](https://github.com/jaredhanson/passport) as `middleware':
+The following example uses [Passport](https://github.com/jaredhanson/passport) as `middleware`:
 
 ```javascript
 var passport = require('passport')
@@ -193,18 +296,10 @@ module.exports = {
 , login: function(req, res) {
     res.status(200).json({ loginAs: req.user.username });
   }
-
 };
  ```
 
-### `preset` : Object [Default: `undefined`]
-
-The following properties will be applied to each element in `__routes`:
-
-+ **`middleware`: {Function|Function[]} [Default: `undefined`]**<br>
-  Middleware(s) to be passed to Express.
-
-For example, if you want to authenticate users for every action in a controller, you can use `preset.middleware` as follow:
+If you want to authenticate users for every action in a controller, you can use `preset.middleware` as follow:
 
 ```javascript
 var passport = require('passport')
@@ -257,3 +352,5 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [travis-url]: https://travis-ci.org/bow-fujita/exprest4
 [coveralls-image]: https://img.shields.io/coveralls/bow-fujita/exprest4/master.svg
 [coveralls-url]: https://coveralls.io/github/bow-fujita/exprest4?branch=master
+[david-image]: https://david-dm.org/bow-fujita/exprest4.svg
+[david-url]: https://david-dm.org/bow-fujita/exprest4
