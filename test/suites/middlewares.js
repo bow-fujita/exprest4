@@ -12,7 +12,7 @@ var exprest = require(process.env.APP_ROOT)
   , passport = require('passport')
   , fs = require('fs')
   , path = require('path')
-  , ctrl_dir = path.join(__dirname, '..', 'controllers', 'middlewares')
+  , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
   , app = express()
 ;
 
@@ -75,23 +75,23 @@ describe('middlewares', function() {
 
   }); // passport
 
-  describe('multiple', function() {
+  describe('multi-middlewares', function() {
 
-    it('POST /multiple no user', function(done) {
-      request(app).post('/multiple')
+    it('POST /multi-middlewares no user', function(done) {
+      request(app).post('/multi-middlewares')
         .attach('now', now_file)
         .expect(401, done);
     });
 
-    it('POST /multiple invalid user', function(done) {
-      request(app).post('/multiple')
+    it('POST /multi-middlewares invalid user', function(done) {
+      request(app).post('/multi-middlewares')
         .attach('now', now_file)
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('POST /multiple valid user', function(done) {
-      request(app).post('/multiple')
+    it('POST /multi-middlewares valid user', function(done) {
+      request(app).post('/multi-middlewares')
         .attach('now', now_file)
         .auth('admin', 'x')
         .expect(200, {
@@ -100,7 +100,7 @@ describe('middlewares', function() {
         }, done);
     });
 
-  }); // multiple
+  }); // multi-middlewares
 
   describe('preset', function() {
 

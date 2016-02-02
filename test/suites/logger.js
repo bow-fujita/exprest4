@@ -9,6 +9,7 @@
 var exprest = require(process.env.APP_ROOT)
   , express = require('express')
   , path = require('path')
+  , _ = require('underscore')
   , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
   , app = express()
 ; 
@@ -33,7 +34,10 @@ describe('logger', function() {
       }
     });
 
-    actual_logs.should.deepEqual(expected_logs);
+    var count = 0;
+    expected_logs.forEach(function(expected) {
+      expected.should.be.equalOneOf(actual_logs);
+    });
     done();
   });
 
