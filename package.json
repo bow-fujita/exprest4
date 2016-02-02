@@ -40,7 +40,8 @@
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "should": "~8.1.1",
-    "supertest": "~1.1.0"
+    "supertest": "~1.1.0",
+    "validator": "^4.5.2"
   },
   "scripts": {
     "test": "make check"
