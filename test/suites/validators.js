@@ -49,30 +49,4 @@ describe('validators', function() {
     });
   }); // GET /validator/regexp
 
-  describe('GET /validator/preset', function() {
-    it('valid', function(done) {
-      request(app).get('/validator/preset/123')
-        .expect(200, {
-          id: 123
-        }, done);
-    });
-
-    it('invalid', function(done) {
-      request(app).get('/validator/preset/abc').expect(404, done);
-    });
-  }); // GET /validator/preset
-
-  describe('GET /validator/overwrite', function() {
-    it('valid', function(done) {
-      request(app).get('/validator/overwrite/abc')
-        .expect(200, {
-          id: 'abc'
-        }, done);
-    });
-
-    it('invalid', function(done) {
-      request(app).get('/validator/overwrite/123').expect(404, done);
-    });
-  }); // GET /validator/overwrite
-
 });
