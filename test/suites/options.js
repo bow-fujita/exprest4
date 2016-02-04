@@ -83,6 +83,23 @@ describe('options', function() {
         }, done);
     });
 
+    it('GET /authorizer/public no user', function(done) {
+      request(app).get('/authorizer/public')
+        .expect(200, {}, done);
+    });
+
+    it('GET /authorizer invalid user', function(done) {
+      request(app).get('/authorizer/public')
+        .auth('user', 'x')
+        .expect(200, {}, done);
+    });
+
+    it('GET /authorizer valid user', function(done) {
+      request(app).get('/authorizer/public')
+        .auth('admin', 'x')
+        .expect(200, {}, done);
+    });
+
   }); // authorizer
 
 });

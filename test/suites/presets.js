@@ -18,28 +18,28 @@ var exprest = require(process.env.APP_ROOT)
 
 describe('presets', function() {
 
-  var now_file = 'now.txt'
-    , now_time = (new Date).toString()
-  ;
-
-  before(function(done) {
-    // Setting up for passport-http
-    var BasicStrategy = require('passport-http').BasicStrategy;
-    app.use(passport.initialize());
-    passport.use(new BasicStrategy(function(user, pass, callback) {
-      if (user != 'admin') {
-        return callback(null, false);
-      }
-      return callback(null, { username: user });
-    }));
-
-    exprest.route(app, { controllers: ctrl_dir });
-
-    // For file upload
-    fs.writeFile(now_file, now_time, done);
-  });
-
   describe('middleware', function() {
+
+    var now_file = 'now.txt'
+      , now_time = (new Date).toString()
+    ;
+
+    before(function(done) {
+      // Setting up for passport-http
+      var BasicStrategy = require('passport-http').BasicStrategy;
+      app.use(passport.initialize());
+      passport.use(new BasicStrategy(function(user, pass, callback) {
+        if (user != 'admin') {
+          return callback(null, false);
+        }
+        return callback(null, { username: user });
+      }));
+
+      exprest.route(app, { controllers: ctrl_dir });
+
+      // For file upload
+      fs.writeFile(now_file, now_time, done);
+    });
 
     it('GET /middleware no user', function(done) {
       request(app).get('/middleware')
@@ -83,6 +83,9 @@ describe('presets', function() {
         }, done);
     });
 
+    after(function(done) {
+      fs.unlink(now_file, done);
+    });
 
   }); // middleware
 
@@ -115,9 +118,5 @@ describe('presets', function() {
     }); // GET /validator/overwrite
 
   }); // validator
-
-  after(function(done) {
-    fs.unlink(now_file, done);
-  });
 
 });

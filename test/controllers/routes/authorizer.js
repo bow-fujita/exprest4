@@ -10,6 +10,10 @@ module.exports = {
   __exprest: {
     routes: [{
       action: 'authorize'
+    }, {
+      action: 'authorize'
+    , path: 'public'
+    , authorized: false
     }]
   }
 
