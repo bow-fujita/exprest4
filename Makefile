@@ -89,8 +89,23 @@ ifneq ($(NO_SHOWENV),yes)
 	@echo
 endif
 
+.PHONY: shownpm
+shownpm:
+ifneq ($(NO_SHOWNPM),yes)
+	@echo '#'
+	@echo '# Global NPM Packages'
+	@echo '#'
+	@npm list --global
+	@echo
+	@echo '#'
+	@echo '# Local NPM Packages'
+	@echo '#'
+	@npm list --local
+	@echo
+endif
+
 .PHONY: check
-check: clean showenv | $(REQUIRED_MODULES)
+check: clean showenv shownpm | $(REQUIRED_MODULES)
 ifeq ($(NO_COVERAGE),yes)
 	$(MOCHA) $(MOCHA_OPTIONS)
 else
