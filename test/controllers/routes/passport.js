@@ -13,7 +13,13 @@ module.exports = {
   __exprest: {
     routes: [{
       action: 'login'
+    , path: 'basic'
     , middleware: passport.authenticate('basic', { session: false })
+    }, {
+      action: 'login'
+    , path: 'local'
+    , method: 'post'
+    , middleware: passport.authenticate('local')
     }]
   }
 

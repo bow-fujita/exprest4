@@ -10,6 +10,7 @@ var exprest = require(process.env.APP_ROOT)
   , express = require('express')
   , request = require('supertest')
   , passport = require('passport')
+  , bodyParser = require('body-parser')
   , fs = require('fs')
   , path = require('path')
   , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
@@ -23,15 +24,27 @@ describe('middlewares', function() {
   ;
 
   before(function(done) {
-    // Setting up for passport-http
-    var BasicStrategy = require('passport-http').BasicStrategy;
+    // Setting up for passport
+    var authenticator = function(user, pass, callback) {
+          if (user != 'admin') {
+            return callback(null, false);
+          }
+          return callback(null, { username: user });
+        }
+      , BasicStrategy = require('passport-http').BasicStrategy
+      , LocalStrategy = require('passport-local')
+    ;
+
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(passport.initialize());
-    passport.use(new BasicStrategy(function(user, pass, callback) {
-      if (user != 'admin') {
-        return callback(null, false);
-      }
-      return callback(null, { username: user });
-    }));
+    passport.use(new BasicStrategy(authenticator));
+    passport.use(new LocalStrategy(authenticator));
+    passport.serializeUser(function(user, callback) {
+      callback(null, user);
+    });
+    passport.deserializeUser(function(user, callback) {
+      callback(null, user);
+    });
 
     exprest.route(app, { controllers: ctrl_dir });
 
@@ -54,20 +67,43 @@ describe('middlewares', function() {
 
   describe('passport', function() {
 
-    it('GET /passport no user', function(done) {
-      request(app).get('/passport')
+    it('GET /passport/basic no user', function(done) {
+      request(app).get('/passport/basic')
         .expect(401, done);
     });
 
-    it('GET /passport invalid user', function(done) {
-      request(app).get('/passport')
+    it('GET /passport/basic invalid user', function(done) {
+      request(app).get('/passport/basic')
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('GET /passport valid user', function(done) {
-      request(app).get('/passport')
+    it('GET /passport/basic valid user', function(done) {
+      request(app).get('/passport/basic')
         .auth('admin', 'x')
+        .expect(200, {
+          loginAs: 'admin'
+        }, done);
+    });
+
+    it('POST /passport/local no user', function(done) {
+      request(app).post('/passport/local')
+        .type('form')
+        .send({ password: 'x' })
+        .expect(400, done);
+    });
+
+    it('POST /passport/local invalid user', function(done) {
+      request(app).post('/passport/local')
+        .type('form')
+        .send({ username: 'user', password: 'x' })
+        .expect(401, done);
+    });
+
+    it('POST /passport/local valid user', function(done) {
+      request(app).post('/passport/local')
+        .type('form')
+        .send({ username: 'admin', password: 'x' })
         .expect(200, {
           loginAs: 'admin'
         }, done);
