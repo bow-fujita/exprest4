@@ -9,10 +9,10 @@
 var exprest = require(process.env.APP_ROOT)
   , express = require('express')
   , request = require('supertest')
-  , passport = require('passport')
   , bodyParser = require('body-parser')
   , fs = require('fs')
   , path = require('path')
+  , passport = require('../utils/passport')
   , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
   , app = express()
 ;
@@ -24,34 +24,15 @@ describe('middlewares', function() {
   ;
 
   before(function(done) {
-    // Setting up for passport
-    var authenticator = function(user, pass, callback) {
-          if (user != 'admin') {
-            return callback(null, false);
-          }
-          return callback(null, { username: user });
-        }
-      , BasicStrategy = require('passport-http').BasicStrategy
-      , LocalStrategy = require('passport-local')
-    ;
-
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(passport.initialize());
-    passport.use(new BasicStrategy(authenticator));
-    passport.use(new LocalStrategy(authenticator));
-    passport.serializeUser(function(user, callback) {
-      callback(null, user);
-    });
-    passport.deserializeUser(function(user, callback) {
-      callback(null, user);
-    });
-
     exprest.route(app, { controllers: ctrl_dir });
-
-    // For file upload
     fs.writeFile(now_file, now_time, done);
+  });
 
-  }); // before
+  after(function(done) {
+    fs.unlink(now_file, done);
+  });
 
   describe('multer', function() {
 
@@ -137,9 +118,5 @@ describe('middlewares', function() {
     });
 
   }); // multi-middlewares
-
-  after(function(done) {
-    fs.unlink(now_file, done);
-  });
 
 });

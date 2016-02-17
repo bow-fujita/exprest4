@@ -9,36 +9,31 @@
 var exprest = require(process.env.APP_ROOT)
   , express = require('express')
   , request = require('supertest')
-  , passport = require('passport')
+  , bodyParser = require('body-parser')
   , fs = require('fs')
   , path = require('path')
+  , passport = require('../utils/passport')
   , ctrl_dir = path.join(__dirname, '..', 'controllers', 'presets')
-  , app = express()
 ;
 
 describe('presets', function() {
 
   describe('middleware', function() {
 
-    var now_file = 'now.txt'
+    var app = express()
+      , now_file = 'now.txt'
       , now_time = (new Date).toString()
     ;
 
     before(function(done) {
-      // Setting up for passport-http
-      var BasicStrategy = require('passport-http').BasicStrategy;
+      app.use(bodyParser.urlencoded({ extended: true }));
       app.use(passport.initialize());
-      passport.use(new BasicStrategy(function(user, pass, callback) {
-        if (user != 'admin') {
-          return callback(null, false);
-        }
-        return callback(null, { username: user });
-      }));
-
       exprest.route(app, { controllers: ctrl_dir });
-
-      // For file upload
       fs.writeFile(now_file, now_time, done);
+    });
+
+    after(function(done) {
+      fs.unlink(now_file, done);
     });
 
     it('GET /middleware no user', function(done) {
@@ -83,13 +78,16 @@ describe('presets', function() {
         }, done);
     });
 
-    after(function(done) {
-      fs.unlink(now_file, done);
-    });
-
   }); // middleware
 
   describe('validator', function() {
+
+    var app = express();
+
+    before(function(done) {
+      exprest.route(app, { controllers: ctrl_dir });
+      done();
+    });
 
     describe('GET /validator', function() {
       it('valid', function(done) {
@@ -118,5 +116,56 @@ describe('presets', function() {
     }); // GET /validator/overwrite
 
   }); // validator
+
+  describe('authorizer', function() {
+
+    var app = express();
+
+    before(function(done) {
+      app.use(passport.initialize());
+      exprest.route(app, {
+        controllers: ctrl_dir
+      , authorizer: passport.authenticate('basic', { session: false })
+      });
+      done();
+    });
+
+    it('GET /authorizer/private no user', function(done) {
+      request(app).get('/authorizer/private')
+        .expect(401, done);
+    });
+
+    it('GET /authorizer/private invalid user', function(done) {
+      request(app).get('/authorizer/private')
+        .auth('user', 'x')
+        .expect(401, done);
+    });
+
+    it('GET /authorizer/private valid user', function(done) {
+      request(app).get('/authorizer/private')
+        .auth('admin', 'x')
+        .expect(200, {
+          loginAs: 'admin'
+        }, done);
+    });
+
+    it('GET /authorizer/public no user', function(done) {
+      request(app).get('/authorizer/public')
+        .expect(200, {}, done);
+    });
+
+    it('GET /authorizer invalid user', function(done) {
+      request(app).get('/authorizer/public')
+        .auth('user', 'x')
+        .expect(200, {}, done);
+    });
+
+    it('GET /authorizer valid user', function(done) {
+      request(app).get('/authorizer/public')
+        .auth('admin', 'x')
+        .expect(200, {}, done);
+    });
+
+  }); // authorizer
 
 });

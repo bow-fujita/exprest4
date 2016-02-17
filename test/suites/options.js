@@ -10,6 +10,7 @@ var exprest = require(process.env.APP_ROOT)
   , express = require('express')
   , request = require('supertest')
   , path = require('path')
+  , passport = require('../utils/passport')
   , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
 ; 
 
@@ -45,18 +46,7 @@ describe('options', function() {
     var app = express();
 
     before(function(done) {
-      var passport = require('passport')
-        , BasicStrategy = require('passport-http').BasicStrategy
-      ;
-
       app.use(passport.initialize());
-      passport.use(new BasicStrategy(function(user, pass, callback) {
-        if (user != 'admin') {
-          return callback(null, false);
-        }
-        return callback(null, { username: user });
-      }));
-
       exprest.route(app, {
         controllers: ctrl_dir
       , authorizer: passport.authenticate('basic', { session: false })
@@ -64,19 +54,19 @@ describe('options', function() {
       done();
     });
 
-    it('GET /authorizer no user', function(done) {
-      request(app).get('/authorizer')
+    it('GET /authorizer/private no user', function(done) {
+      request(app).get('/authorizer/private')
         .expect(401, done);
     });
 
-    it('GET /authorizer invalid user', function(done) {
-      request(app).get('/authorizer')
+    it('GET /authorizer/private invalid user', function(done) {
+      request(app).get('/authorizer/private')
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('GET /authorizer valid user', function(done) {
-      request(app).get('/authorizer')
+    it('GET /authorizer/private valid user', function(done) {
+      request(app).get('/authorizer/private')
         .auth('admin', 'x')
         .expect(200, {
           loginAs: 'admin'
@@ -88,13 +78,13 @@ describe('options', function() {
         .expect(200, {}, done);
     });
 
-    it('GET /authorizer invalid user', function(done) {
+    it('GET /authorizer/public invalid user', function(done) {
       request(app).get('/authorizer/public')
         .auth('user', 'x')
         .expect(200, {}, done);
     });
 
-    it('GET /authorizer valid user', function(done) {
+    it('GET /authorizer/public valid user', function(done) {
       request(app).get('/authorizer/public')
         .auth('admin', 'x')
         .expect(200, {}, done);

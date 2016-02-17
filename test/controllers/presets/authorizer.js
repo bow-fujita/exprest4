@@ -8,17 +8,20 @@
 
 module.exports = {
   __exprest: {
-    routes: [{
+    preset: {
+      authorized: false
+    }
+  , routes: [{
       action: 'authorize'
     , path: 'private'
+    , authorized: true
     }, {
       action: 'authorize'
     , path: 'public'
-    , authorized: false
     }]
   }
 
-, authorize: function(req, res, next) {
+, authorize: function(req, res) {
     res.status(200).json({ loginAs: (req.user || {}).username });
   }
 
