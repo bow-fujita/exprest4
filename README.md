@@ -101,17 +101,22 @@ app.delete('/api/example/:id', example.remove);
 ### `route(app[, opts])`
 
 `exprest` routes controller modules for `app` which must be an Express instance.
+
+`opts` is an object which may have the following properties:
+
++ **`controllers`: String [Default: `path.join(process.cwd(), 'controllers')`]<br>**
+  Physical path to where controllers are implemented.
+
++ **`url`: String [Default: `'/'`]**<br>
+  Virtual path prefix for the `controllers`.
+
++ **`authorizer`: Function [Default: `undefined`]**<br>
+  Middleware for user authorization.
+
+
 Each controller module implemented in `opts.controllers` directory will be mapped onto `opts.url`.
 You don't have to code for routing by yourself.
 Just maintain APIs structure as physical directory structure.
-
-If `opts` is omitted, the following options are applied:
-```javascript
-opts = {
-  controllers: path.join(process.cwd(), 'controllers')
-, url: '/'
-}
-```
 
 If you call `route()` once, which means you have only one controller directory, REST API is going to be flat like `/api/<controllers>`.
 
@@ -122,6 +127,9 @@ For example, if you want to seperate APIs by version like `/api/v1/<controllers>
 // app.js
 
 var path = require('path')
+  , express = require('express')
+  , exprest = require('exprest4')
+  , app = express()
   , api_versions = [1, 2]
   , controllers_dir = path.join(process.cwd(), 'controllers')
 ;
@@ -133,6 +141,27 @@ api_versions.forEach(function(version) {
     });
 });
 ```
+
+If your REST APIs require users to be authenticated and/or to be authorized, `opts.authorizer` is the right place to implement user authentication/authorization feature.
+You can specifiy a middleware as `opt.authorizer` to verify a user session, then it will be called at first for every controller.
+The following example uses [connect-ensure-login](https://github.com/jaredhanson/connect-ensure-login) as `opt.authorizer`:
+
+```javascript
+// app.js
+
+var path = require('path')
+  , express = require('express')
+  , exprest = require('exprest4')
+  , app = express()
+  , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
+;
+
+exprest.route(app, {
+    url: '/api'
+  , authorizer: ensureLoggedIn('/login')
+});
+```
+
 
 ## `__exprest` Property
 
@@ -147,7 +176,10 @@ Each element is an object which has the following properties:
   Request method to be routed.
 
 + **`path`: String [Default: `''`]**<br>
-  Virtual path for this `action`.
+  Virtual path for the `action`.
+
++ **`authorized`: Boolean [Default: `true`]**<br>
+  Authorization is required or not for the `action`.
 
 + **`validator`: Object [Default: `undefined`]**<br>
   [Validator(s)](#validator) for placeholders in `path`.
@@ -159,6 +191,10 @@ Each element is an object which has the following properties:
 ### `preset` : Object [Default: `undefined`]
 
 The following properties will be applied to each element in `routes`:
+
++ **`authorized`: Boolean [Default: `true`]**<br>
+  Authorization is required or not.
+  This can be overwritten by `routes[].authorized`.
 
 + **`validator`: Object [Default: `undefined`]**<br>
   [Validator(s)](#validator) for placeholders in each `path`.
