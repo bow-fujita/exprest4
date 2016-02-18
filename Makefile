@@ -13,6 +13,15 @@ all:
 
 -include Makefile.local
 
+# Default options
+NO_SHOWENV ?= yes
+NO_SHOWNPM ?= yes
+NO_COVERAGE ?= no
+NO_COVERALLS ?= no
+COVERALLS_RETRY ?= 0
+COVERALLS_INTERVAL ?= 3
+
+
 TEST_DIR := test
 COVERAGE_DIR := coverage
 NODE_MODULES := node_modules
@@ -93,11 +102,6 @@ endif
 shownpm:
 ifneq ($(NO_SHOWNPM),yes)
 	@echo '#'
-	@echo '# Global NPM Packages'
-	@echo '#'
-	@npm list --global
-	@echo
-	@echo '#'
 	@echo '# Local NPM Packages'
 	@echo '#'
 	@npm list --local
@@ -111,8 +115,18 @@ ifeq ($(NO_COVERAGE),yes)
 else
 	$(ISTANBUL) cover $(MOCHA) $(ISTANBUL_OPTIONS) -- $(MOCHA_OPTIONS)
 ifeq ($(TRAVIS),true)
-	cat $(LCOV_INFO) | $(COVERALLS)
-endif
+ifneq ($(NO_COVERALLS),yes)
+	@retry=$(COVERALLS_RETRY); \
+	while : ; do \
+		echo 'Sending coverage data to Coveralls.io ...'; \
+		rc=0; \
+		cat $(LCOV_INFO) | $(COVERALLS) && break || rc=$$?; \
+		[ $$retry -gt 0 ] || exit $$rc; \
+		retry=$$((retry-1)); \
+		sleep $(COVERALLS_INTERVAL); \
+	done
+endif # $(NO_COVERALLS) != yes
+endif # $(TRAVIS) == true
 endif # $(NO_COVERAGE) != yes
 
 .PHONY: debug
