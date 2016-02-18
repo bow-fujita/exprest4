@@ -33,13 +33,15 @@ describe('options', function() {
     , logger: function(msg) {
         actual_logs.push(msg);
       }
+    })
+    .should.be.fulfilled()
+    .then(function() {
+      expected_logs.forEach(function(expected) {
+        expected.should.be.equalOneOf(actual_logs);
+      });
+      done();
     });
 
-    var count = 0;
-    expected_logs.forEach(function(expected) {
-      expected.should.be.equalOneOf(actual_logs);
-    });
-    done();
   }); // logger
 
   describe('authorizer', function() {
@@ -50,8 +52,8 @@ describe('options', function() {
       exprest.route(app, {
         controllers: ctrl_dir
       , authorizer: passport.authenticate('basic', { session: false })
-      });
-      done();
+      })
+      .then(function() { done(); }, done);
     });
 
     it('GET /authorizer/private no user', function(done) {

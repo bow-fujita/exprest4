@@ -21,8 +21,8 @@ describe('routes', function() {
   describe('default url', function() {
 
     before(function(done) {
-      exprest.route(app, { controllers: ctrl_dir });
-      done();
+      exprest.route(app, { controllers: ctrl_dir })
+      .then(function() { done(); }, done);
     });
 
     // Check if routed properly
@@ -89,8 +89,8 @@ describe('routes', function() {
   describe('custom url', function() {
 
     before(function(done) {
-      exprest.route(app, { controllers: ctrl_dir, url: '/api' });
-      done();
+      exprest.route(app, { controllers: ctrl_dir, url: '/api' })
+      .then(function() { done(); }, done);
     });
 
     // Check if routed properly

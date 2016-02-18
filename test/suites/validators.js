@@ -19,8 +19,8 @@ var exprest = require(process.env.APP_ROOT)
 describe('validators', function() {
 
   before(function(done) {
-    exprest.route(app, { controllers: ctrl_dir });
-    done();
+    exprest.route(app, { controllers: ctrl_dir })
+    .then(function() { done(); }, done);
   });
 
   describe('GET /validator/email', function() {

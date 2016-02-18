@@ -28,8 +28,10 @@ describe('presets', function() {
     before(function(done) {
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(passport.initialize());
-      exprest.route(app, { controllers: ctrl_dir });
-      fs.writeFile(now_file, now_time, done);
+      exprest.route(app, { controllers: ctrl_dir })
+      .then(function() {
+        fs.writeFile(now_file, now_time, done);
+      }, done);
     });
 
     after(function(done) {
@@ -85,8 +87,8 @@ describe('presets', function() {
     var app = express();
 
     before(function(done) {
-      exprest.route(app, { controllers: ctrl_dir });
-      done();
+      exprest.route(app, { controllers: ctrl_dir })
+      .then(function() { done(); }, done);
     });
 
     describe('GET /validator', function() {
@@ -126,8 +128,8 @@ describe('presets', function() {
       exprest.route(app, {
         controllers: ctrl_dir
       , authorizer: passport.authenticate('basic', { session: false })
-      });
-      done();
+      })
+      .then(function() { done(); }, done);
     });
 
     it('GET /authorizer/private no user', function(done) {

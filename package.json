@@ -23,7 +23,7 @@
     "mvc"
   ],
   "engines": {
-    "node": ">= 0.10"
+    "node": ">= 0.11"
   },
   "dependencies": {
     "methods": "~1.1.2",

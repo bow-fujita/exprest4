@@ -26,8 +26,10 @@ describe('middlewares', function() {
   before(function(done) {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(passport.initialize());
-    exprest.route(app, { controllers: ctrl_dir });
-    fs.writeFile(now_file, now_time, done);
+    exprest.route(app, { controllers: ctrl_dir })
+    .then(function() {
+      fs.writeFile(now_file, now_time, done);
+    }, done);
   });
 
   after(function(done) {
