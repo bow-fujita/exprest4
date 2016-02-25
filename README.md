@@ -33,9 +33,10 @@ var express = require('express')
   , app = express()
 ;
 
-exprest.route(app, { url: '/api' });
-
-app.listen();
+exprest.route(app, { url: '/api' })
+.then(function() {
+  app.listen();
+});
 ```
 
 `exprest4` regards each file/directory under the `controllers` directory as a controller module in terms of MVC, and routes everything upon `route()` call.
@@ -98,7 +99,7 @@ app.delete('/api/example/:id', example.remove);
 
 ## Methods
 
-### `route(app[, opts])`
+### `route(app[, opts]) -> Promise`
 
 `exprest` routes controller modules for `app` which must be an Express instance.
 
@@ -134,11 +135,16 @@ var path = require('path')
   , controllers_dir = path.join(process.cwd(), 'controllers')
 ;
 
-api_versions.forEach(function(version) {
-    exprest.route(app, {
-      url: '/api/v'+version
-    , controllers: path.join(controllers_dir, 'v'+version)
-    });
+Promise.all(
+  api_versions.map(function(version) {
+    return exprest.route(app, {
+             url: '/api/v'+version
+           , controllers: path.join(controllers_dir, 'v'+version)
+           });
+  })
+)
+.then(function() {
+  app.listen();
 });
 ```
 
@@ -159,6 +165,9 @@ var path = require('path')
 exprest.route(app, {
     url: '/api'
   , authorizer: ensureLoggedIn('/login')
+})
+.then(function() {
+  app.listen();
 });
 ```
 
