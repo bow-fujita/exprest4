@@ -49,4 +49,25 @@ describe('validators', function() {
     });
   }); // GET /validator/regexp
 
+  describe('GET /validator/multi', function() {
+    it('valid', function(done) {
+      request(app).get('/validator/multi/1/true')
+        .expect(200, {
+          id: '1'
+        , flag: 'true'
+        }, done);
+    });
+
+    it('invalid id', function(done) {
+      request(app).get('/validator/multi/x/true').expect(404, done);
+    });
+    it('invalid flag', function(done) {
+      request(app).get('/validator/multi/1/x').expect(404, done);
+    });
+  }); // GET /validator/regexp
+
+  it('GET /validator/dummy', function(done) {
+    request(app).get('/validator/dummy/key').expect(200, done);
+  });
+
 });

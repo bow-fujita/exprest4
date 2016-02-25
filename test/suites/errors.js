@@ -16,7 +16,7 @@ var exprest = require(process.env.APP_ROOT)
 describe('config error', function() {
 
   it('no controllers dir', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'no_ctrl_dir') })
+    exprest.route(app)
     .should.be.rejectedWith(/ENOENT/)
     .then(function() { done(); }, done);
   });

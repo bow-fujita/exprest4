@@ -23,6 +23,21 @@ module.exports = {
     , validator: {
         name: /^[A-Z]+$/i
       }
+    }, {
+      action: 'multi'
+    , path: 'multi/:id/:flag'
+    , validator: {
+        id: validator.isInt
+      , flag: validator.isBoolean
+      }
+    }, {
+      // To improve coverage
+      action: 'dummy'
+    , path: 'dummy/:key'
+    , validator: {
+        null: validator.isNull
+      , key: true
+      }
     }]
   }
 
@@ -31,6 +46,15 @@ module.exports = {
   }
 , regexp: function(req, res) {
     res.status(200).json({ name: req.params.name });
+  }
+, multi: function(req, res) {
+    res.status(200).json({
+      id: req.params.id
+    , flag: req.params.flag
+    });
+  }
+, dummy: function(req, res) {
+    res.status(200).end();
   }
 
 };
