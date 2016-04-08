@@ -111,6 +111,9 @@ app.delete('/api/example/:id', example.remove);
 + **`url`: String [Default: `'/'`]**<br>
   Virtual path prefix for the `controllers`.
 
++ **`index`: String [Default: `'index'`]**<br>
+  Controller's name which will be mapped directly onto `url`.
+
 + **`authorizer`: Function [Default: `undefined`]**<br>
   Middleware for user authorization.
 

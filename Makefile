@@ -30,14 +30,14 @@ REQUIRED_MODULES :=
 
 
 # Use _mocha instead of mocha for istanbul
-# https://github.com/gotwarlost/istanbul/issues/44 
+# https://github.com/gotwarlost/istanbul/issues/44
 MOCHA := $(shell which _mocha 2> /dev/null)
 ifeq ($(MOCHA),)
 MOCHA := $(NODE_MODULES_BIN)/_mocha
 REQUIRED_MODULES += $(MOCHA)
 endif
 
-MOCHA_OPTIONS := --opts $(TEST_DIR)/mocha.opts $(TEST_DIR)/suites
+MOCHA_OPTIONS := --opts $(TEST_DIR)/mocha.opts
 
 
 ifneq ($(NO_COVERAGE),yes)
@@ -67,6 +67,8 @@ ifeq ($(NODE_DEBUG),)
 NODE_DEBUG := $(NODE_MODULES_BIN)/node-debug
 REQUIRED_MODULES += $(NODE_DEBUG)
 
+MOCHA_OPTIONS += --timeout=300000
+
 NODE_DEBUG_OPTIONS :=
 ifneq ($(NODE_DEBUG_PORT),)
 NODE_DEBUG_OPTIONS += --debug-port $(NODE_DEBUG_PORT)
@@ -80,6 +82,9 @@ endif
 endif # $(MAKECMDGOALS) == debug
 
 endif
+
+MOCHA_OPTIONS += $(TEST_DIR)/suites
+
 
 $(REQUIRED_MODULES):
 	npm install
