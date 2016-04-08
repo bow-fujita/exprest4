@@ -25,7 +25,22 @@ describe('routes', function() {
       .then(function() { done(); }, done);
     });
 
-    // Check if routed properly
+    // Check if index controller routed properly
+    it('GET /', function(done) {
+      request(app).get('/')
+        .expect(200, {
+          action: 'top'
+        }, done);
+    });
+
+    it('GET /dashboard', function(done) {
+      request(app).get('/dashboard')
+        .expect(200, {
+          action: 'dashboard'
+        }, done);
+    });
+
+    // Check if user controller routed properly
     it('GET /user', function(done) {
       request(app).get('/user')
         .expect(200, {
@@ -93,7 +108,22 @@ describe('routes', function() {
       .then(function() { done(); }, done);
     });
 
-    // Check if routed properly
+    // Check if index controller routed properly
+    it('GET /api', function(done) {
+      request(app).get('/api')
+        .expect(200, {
+          action: 'top'
+        }, done);
+    });
+
+    it('GET /api/dashboard', function(done) {
+      request(app).get('/api/dashboard')
+        .expect(200, {
+          action: 'dashboard'
+        }, done);
+    });
+
+     // Check if user controller routed properly
     it('GET /api/user', function(done) {
       request(app).get('/api/user')
         .expect(200, {

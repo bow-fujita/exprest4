@@ -12,7 +12,7 @@ var exprest = require(process.env.APP_ROOT)
   , path = require('path')
   , passport = require('../utils/passport')
   , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
-; 
+;
 
 describe('options', function() {
 
@@ -43,6 +43,34 @@ describe('options', function() {
     });
 
   }); // logger
+
+  describe('index', function() {
+    var app = express();
+
+    before(function(done) {
+      exprest.route(app, {
+        controllers: ctrl_dir
+      , index: 'user'
+      })
+      .then(function() { done(); }, done);
+    });
+
+    // Check if user controller mapped onto /
+    it('GET /', function(done) {
+      request(app).get('/')
+        .expect(200, {
+          action: 'list'
+        }, done);
+    });
+
+    // Check if index controller mapped onto /index
+    it('GET /index', function(done) {
+      request(app).get('/index')
+        .expect(200, {
+          action: 'top'
+        }, done);
+    });
+  });
 
   describe('authorizer', function() {
     var app = express();
