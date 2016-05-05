@@ -117,6 +117,8 @@ app.delete('/api/example/:id', example.remove);
 + **`authorizer`: Function [Default: `undefined`]**<br>
   Middleware for user authorization.
 
++ **`templates`: Object [Default: `{ crud: [...] }`]**<br>
+  Templates for routes.
 
 Each controller module implemented in `opts.controllers` directory will be mapped onto `opts.url`.
 You don't have to code for routing by yourself.
@@ -214,6 +216,9 @@ The following properties will be applied to each element in `routes`:
 + **`middleware`: {Function|Function[]} [Default: `undefined`]**<br>
   [Middleware(s)](#middleware) to be passed to Express.
 
++ **`template`: String [Default: `undefined`]**<br>
+  One of [templates](#template) to be used as `routes`.
+
 
 ### Validator
 
@@ -300,7 +305,6 @@ module.exports = {
 };
 ```
 
-
 ### Middleware
 
 `middleware` is typically used for APIs accept file uploading.
@@ -377,6 +381,78 @@ module.exports = {
     res.status(200).json({ echo: req.file.buffer.toString() });
   }
 };
+```
+
+### Template
+
+`template` is an option to avoid defining the same `routes` in multiple controllers.
+Once you define routes which might be used often in several controllers, then feed them to `route()` with `opts.templates`, each controller can refer one of the templates through `preset.template` property.
+The following example shows how to use template:
+
+```javascript
+// app.js
+
+var express = require('express')
+  , exprest = require('exprest4')
+  , app = express()
+  , templates = {
+      queue: [{
+        action: 'push'
+      , path:   ':elem'
+      , method: 'post'
+      }, {
+        action: 'pop'
+      , method: 'delete'
+      }]
+    }
+;
+
+exprest.route(app, { templates: templates })
+```
+
+```javascript
+// controllers/seat.js
+var waiting_list = [];
+
+module.exports = {
+  __exprest: {
+    preset: {
+      template: 'queue'
+    }
+    // No routes required here.
+  }
+
+, push: function(req, res) {
+    waiting_list.push(req.params.elem);
+    res.status(200).json(waiting_list);
+  }
+, pop: function(req, res) {
+    waiting_list.pop();
+    res.status(200).json(waiting_list);
+  }
+};
+```
+
+`exprest4` provides the following template `crud` by default which might be useful for CRUD-based REST APIs:
+
+```javascript
+[{
+    action: 'list'
+}, {
+    action: 'view'
+  , path:   ':id'
+}, {
+    action: 'create'
+  , method: 'post'
+}, {
+    action: 'update'
+  , path:   ':id'
+  , method: 'put'
+}, {
+    action: 'remove'
+  , path:   ':id'
+  , method: 'delete'
+}]
 ```
 
 

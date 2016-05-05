@@ -24,6 +24,7 @@ describe('options', function() {
         , '[exprest4] app.post("/user") loaded.'
         , '[exprest4] app.put("/user/:id") loaded.'
         , '[exprest4] app.delete("/user/:id") loaded.'
+        , '[exprest4] Invoking list() upon app.get("/user").'
         ]
       , actual_logs = []
     ;
@@ -36,10 +37,13 @@ describe('options', function() {
     })
     .should.be.fulfilled()
     .then(function() {
-      expected_logs.forEach(function(expected) {
-        expected.should.be.equalOneOf(actual_logs);
-      });
-      done();
+      request(app).get('/user')
+        .expect(200, function() {
+          expected_logs.forEach(function(expected) {
+            expected.should.be.equalOneOf(actual_logs);
+          });
+          done();
+        });
     });
 
   }); // logger

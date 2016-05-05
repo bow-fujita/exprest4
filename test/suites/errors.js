@@ -22,43 +22,76 @@ describe('config error', function() {
   });
 
   it('no __exprest', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'no_exprest') })
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'no_exprest')
+    })
     .should.be.rejectedWith(/No __exprest defined/)
     .then(function() { done(); }, done);
   });
 
   it('invalid __exprest', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'invalid_exprest') })
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'invalid_exprest')
+    })
     .should.be.rejectedWith(/Invalid __exprest/)
     .then(function() { done(); }, done);
   });
 
+  it('unknown_template', function(done) {
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'unknown_template')
+    })
+    .should.be.rejectedWith(/Unknown template/)
+    .then(function() { done(); }, done);
+  });
+
+  it('invalid_template', function(done) {
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'invalid_template')
+    , templates: {
+        invalid: {}
+      }
+    })
+    .should.be.rejectedWith(/Invalid template/)
+    .then(function() { done(); }, done);
+  });
+
   it('no routes', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'no_routes') })
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'no_routes')
+    })
     .should.be.rejectedWith(/No __exprest\.routes defined/)
     .then(function() { done(); }, done);
   });
 
   it('invalid routes', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'invalid_routes') })
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'invalid_routes')
+    })
     .should.be.rejectedWith(/Invalid __exprest\.routes/)
     .then(function() { done(); }, done);
   });
 
   it('unknown method', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'unknown_method') })
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'unknown_method')
+    })
     .should.be.rejectedWith(/Unknown method \"test\" in __exprest\.routes\[0\]\.method/)
     .then(function() { done(); }, done);
   });
 
   it('no action defined', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'no_action_def') })
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'no_action_def')
+    })
     .should.be.rejectedWith(/No __exprest\.routes\[0\]\.action defined/)
     .then(function() { done(); }, done);
   });
 
   it('no action implemented', function(done) {
-    exprest.route(app, { controllers: path.join(ctrl_dir, 'no_action_imp') })
+    exprest.route(app, {
+      controllers: path.join(ctrl_dir, 'no_action_imp')
+    })
     .should.be.rejectedWith(/No view\(\) implemented/)
     .then(function() { done(); }, done);
   });
