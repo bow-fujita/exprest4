@@ -19,6 +19,7 @@ module.exports = {
     , middleware: [
         passport.authenticate('basic', { session: false })
       , upload.single('now')
+      , 'silently-discard-non-function'
       ]
     }]
   }

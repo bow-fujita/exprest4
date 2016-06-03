@@ -94,7 +94,72 @@ describe('templates', function() {
       request(app).get('/crud/1/show').expect(404, done);
     });
 
-  });
+  }); // crud
+
+  describe('extend', function() {
+
+     // Check if crud controller routed properly
+    it('GET /extend', function(done) {
+      request(app).get('/extend')
+        .expect(200, {
+          action: 'list'
+        }, done);
+    });
+
+    it('POST /extend', function(done) {
+      request(app).post('/extend')
+        .expect(200, {
+          action: 'create'
+        }, done);
+    });
+
+    it('PUT /extend/:id', function(done) {
+      request(app).put('/extend/1')
+        .expect(200, {
+          action: 'update'
+        , id: 1
+        }, done);
+    });
+
+    it('DELETE /extend/:id', function(done) {
+      request(app).delete('/extend/1')
+        .expect(200, {
+          action: 'remove'
+        , id: 1
+        }, done);
+    });
+
+    // Check if additional action routed properly
+    it('DELETE /extend', function(done) {
+      request(app).delete('/extend')
+        .expect(200, {
+          action: 'clear'
+        }, done);
+    });
+
+    // Check if overwritten action routed properly
+    it('GET /extend/:id', function(done) {
+      request(app).get('/extend/1')
+        .expect(200, {
+          action: 'show'
+        , id: 1
+        }, done);
+    });
+
+    // Check if 404 error returned upon any other methods than routed
+    it('PUT /extend', function(done) {
+      request(app).put('/extend').expect(404, done);
+    });
+    it('POST /extend/:id', function(done) {
+      request(app).post('/extend/1').expect(404, done);
+    });
+
+    // Check if 404 error returned upon unmatched url
+    it('GET /extend/:id/show', function(done) {
+      request(app).get('/extend/1/show').expect(404, done);
+    });
+
+  }); // extend
 
   describe('custom', function() {
 
@@ -133,6 +198,6 @@ describe('templates', function() {
       request(app).put('/queue').expect(404, done);
     });
 
-  });
+  }); // custom
 
 });
