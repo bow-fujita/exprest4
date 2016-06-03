@@ -1,6 +1,6 @@
 {
   "name": "exprest4",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "REST API framework for Express 4.x.",
   "homepage": "https://github.com/bow-fujita/exprest4",
   "repository": {

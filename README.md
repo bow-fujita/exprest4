@@ -455,6 +455,9 @@ module.exports = {
 }]
 ```
 
+If you define `routes` along with `preset.template`, each route in `routes` will be appended to the template routes as a result.
+In addition, `routes` which has exactly the same `method` and `path` overwrites corresponding routes in the template.
+
 
 ## License
 
