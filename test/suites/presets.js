@@ -6,50 +6,50 @@
 
 'use strict';
 
-var exprest = require(process.env.APP_ROOT)
-  , express = require('express')
-  , request = require('supertest')
-  , bodyParser = require('body-parser')
-  , fs = require('fs')
-  , path = require('path')
-  , passport = require('../utils/passport')
-  , ctrl_dir = path.join(__dirname, '..', 'controllers', 'presets')
+const exprest = require(process.env.APP_ROOT)
+    , express = require('express')
+    , request = require('supertest')
+    , bodyParser = require('body-parser')
+    , fs = require('fs')
+    , path = require('path')
+    , passport = require('../utils/passport')
+    , ctrl_dir = path.join(__dirname, '..', 'controllers', 'presets')
 ;
 
-describe('presets', function() {
+describe('presets', () => {
 
-  describe('middleware', function() {
+  describe('middleware', () => {
 
-    var app = express()
-      , now_file = 'now.txt'
-      , now_time = (new Date).toString()
+    const app = express()
+        , now_file = 'now.txt'
+        , now_time = (new Date).toString()
     ;
 
-    before(function(done) {
+    before((done) => {
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(passport.initialize());
       exprest.route(app, { controllers: ctrl_dir })
-      .then(function() {
+      .then(() => {
         fs.writeFile(now_file, now_time, done);
       }, done);
     });
 
-    after(function(done) {
+    after((done) => {
       fs.unlink(now_file, done);
     });
 
-    it('GET /middleware no user', function(done) {
+    it('GET /middleware no user', (done) => {
       request(app).get('/middleware')
         .expect(401, done);
     });
 
-    it('GET /middleware invalid user', function(done) {
+    it('GET /middleware invalid user', (done) => {
       request(app).get('/middleware')
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('GET /middleware valid user', function(done) {
+    it('GET /middleware valid user', (done) => {
       request(app).get('/middleware')
         .auth('admin', 'x')
         .expect(200, {
@@ -57,20 +57,20 @@ describe('presets', function() {
         }, done);
     });
 
-    it('POST /middleware no user', function(done) {
+    it('POST /middleware no user', (done) => {
       request(app).post('/middleware')
         .attach('now', now_file)
         .expect(401, done);
     });
 
-    it('POST /middleware invalid user', function(done) {
+    it('POST /middleware invalid user', (done) => {
       request(app).post('/middleware')
         .attach('now', now_file)
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('POST /middleware valid user', function(done) {
+    it('POST /middleware valid user', (done) => {
       request(app).post('/middleware')
         .attach('now', now_file)
         .auth('admin', 'x')
@@ -82,68 +82,68 @@ describe('presets', function() {
 
   }); // middleware
 
-  describe('validator', function() {
+  describe('validator', () => {
 
-    var app = express();
+    const app = express();
 
-    before(function(done) {
+    before((done) => {
       exprest.route(app, { controllers: ctrl_dir })
-      .then(function() { done(); }, done);
+      .then(() => { done(); }, done);
     });
 
-    describe('GET /validator', function() {
-      it('valid', function(done) {
+    describe('GET /validator', () => {
+      it('valid', (done) => {
         request(app).get('/validator/123')
           .expect(200, {
             id: 123
           }, done);
       });
 
-      it('invalid', function(done) {
+      it('invalid', (done) => {
         request(app).get('/validator/abc').expect(404, done);
       });
     }); // GET /validator
 
-    describe('GET /validator/overwrite', function() {
-      it('valid', function(done) {
+    describe('GET /validator/overwrite', () => {
+      it('valid', (done) => {
         request(app).get('/validator/overwrite/abc')
           .expect(200, {
             id: 'abc'
           }, done);
       });
 
-      it('invalid', function(done) {
+      it('invalid', (done) => {
         request(app).get('/validator/overwrite/123').expect(404, done);
       });
     }); // GET /validator/overwrite
 
   }); // validator
 
-  describe('authorizer', function() {
+  describe('authorizer', () => {
 
-    var app = express();
+    const app = express();
 
-    before(function(done) {
+    before((done) => {
       app.use(passport.initialize());
       exprest.route(app, {
         controllers: ctrl_dir
       , authorizer: passport.authenticate('basic', { session: false })
       })
-      .then(function() { done(); }, done);
+      .then(() => { done(); }, done);
     });
 
-    it('GET /authorizer/private no user', function(done) {
+    it('GET /authorizer/private no user', (done) => {
       request(app).get('/authorizer/private')
         .expect(401, done);
     });
 
-    it('GET /authorizer/private invalid user', function(done) {
+    it('GET /authorizer/private invalid user', (done) => {
       request(app).get('/authorizer/private')
         .auth('user', 'x')
         .expect(401, done);
     });
 
-    it('GET /authorizer/private valid user', function(done) {
+    it('GET /authorizer/private valid user', (done) => {
       request(app).get('/authorizer/private')
         .auth('admin', 'x')
         .expect(200, {
@@ -151,18 +151,18 @@ describe('presets', function() {
         }, done);
     });
 
-    it('GET /authorizer/public no user', function(done) {
+    it('GET /authorizer/public no user', (done) => {
       request(app).get('/authorizer/public')
         .expect(200, {}, done);
     });
 
-    it('GET /authorizer invalid user', function(done) {
+    it('GET /authorizer invalid user', (done) => {
       request(app).get('/authorizer/public')
         .auth('user', 'x')
         .expect(200, {}, done);
     });
 
-    it('GET /authorizer valid user', function(done) {
+    it('GET /authorizer valid user', (done) => {
       request(app).get('/authorizer/public')
         .auth('admin', 'x')
         .expect(200, {}, done);

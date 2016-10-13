@@ -18,7 +18,7 @@ module.exports = {
     }]
   }
 
-, authorize: function(req, res, next) {
+, authorize: (req, res, next) => {
     res.status(200).json({ loginAs: (req.user || {}).username });
   }
 

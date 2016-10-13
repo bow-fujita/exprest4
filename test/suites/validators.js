@@ -6,51 +6,51 @@
 
 'use strict';
 
-var exprest = require(process.env.APP_ROOT)
-  , express = require('express')
-  , request = require('supertest')
-  , _ = require('underscore')
-  , methods = require('methods')
-  , path = require('path')
-  , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
-  , app = express()
+const exprest = require(process.env.APP_ROOT)
+    , express = require('express')
+    , request = require('supertest')
+    , _ = require('underscore')
+    , methods = require('methods')
+    , path = require('path')
+    , ctrl_dir = path.join(__dirname, '..', 'controllers', 'routes')
+    , app = express()
 ;
 
-describe('validators', function() {
+describe('validators', () => {
 
-  before(function(done) {
+  before((done) => {
     exprest.route(app, { controllers: ctrl_dir })
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  describe('GET /validator/email', function() {
-    it('valid', function(done) {
+  describe('GET /validator/email', () => {
+    it('valid', (done) => {
       request(app).get('/validator/email/user@exprest4.local')
         .expect(200, {
           email: 'user@exprest4.local'
         }, done);
     });
 
-    it('invalid', function(done) {
+    it('invalid', (done) => {
       request(app).get('/validator/email/user').expect(404, done);
     });
   }); // GET /validator/email
 
-  describe('GET /validator/regexp', function() {
-    it('valid', function(done) {
+  describe('GET /validator/regexp', () => {
+    it('valid', (done) => {
       request(app).get('/validator/regexp/AtoZ')
         .expect(200, {
           name: 'AtoZ'
         }, done);
     });
 
-    it('invalid', function(done) {
+    it('invalid', (done) => {
       request(app).get('/validator/regexp/Ato9').expect(404, done);
     });
   }); // GET /validator/regexp
 
-  describe('GET /validator/multi', function() {
-    it('valid', function(done) {
+  describe('GET /validator/multi', () => {
+    it('valid', (done) => {
       request(app).get('/validator/multi/1/true')
         .expect(200, {
           id: '1'
@@ -58,15 +58,15 @@ describe('validators', function() {
         }, done);
     });
 
-    it('invalid id', function(done) {
+    it('invalid id', (done) => {
       request(app).get('/validator/multi/x/true').expect(404, done);
     });
-    it('invalid flag', function(done) {
+    it('invalid flag', (done) => {
       request(app).get('/validator/multi/1/x').expect(404, done);
     });
   }); // GET /validator/regexp
 
-  it('GET /validator/dummy', function(done) {
+  it('GET /validator/dummy', (done) => {
     request(app).get('/validator/dummy/key').expect(200, done);
   });
 

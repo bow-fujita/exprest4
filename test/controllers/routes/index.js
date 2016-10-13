@@ -16,10 +16,10 @@ module.exports = {
     }]
   }
 
-, top: function(req, res) {
+, top: (req, res) => {
     res.status(200).json({ action: 'top' });
   }
-, dashboard: function(req, res) {
+, dashboard: (req, res) => {
     res.status(200).json({ action: 'dashboard' });
   }
 };

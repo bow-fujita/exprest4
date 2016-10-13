@@ -6,46 +6,46 @@
 
 'use strict';
 
-var exprest = require(process.env.APP_ROOT)
-  , express = require('express')
-  , path = require('path')
-  , ctrl_dir = path.join(__dirname, '..', 'controllers', 'errors')
-  , app = express()
+const exprest = require(process.env.APP_ROOT)
+    , express = require('express')
+    , path = require('path')
+    , ctrl_dir = path.join(__dirname, '..', 'controllers', 'errors')
+    , app = express()
 ;
 
-describe('config error', function() {
+describe('config error', () => {
 
-  it('no controllers dir', function(done) {
+  it('no controllers dir', (done) => {
     exprest.route(app)
     .should.be.rejectedWith(/ENOENT/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('no __exprest', function(done) {
+  it('no __exprest', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'no_exprest')
     })
     .should.be.rejectedWith(/No __exprest defined/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('invalid __exprest', function(done) {
+  it('invalid __exprest', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'invalid_exprest')
     })
     .should.be.rejectedWith(/Invalid __exprest/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('unknown_template', function(done) {
+  it('unknown_template', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'unknown_template')
     })
     .should.be.rejectedWith(/Unknown template/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('invalid_template', function(done) {
+  it('invalid_template', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'invalid_template')
     , templates: {
@@ -53,48 +53,47 @@ describe('config error', function() {
       }
     })
     .should.be.rejectedWith(/Invalid template/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('no routes', function(done) {
+  it('no routes', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'no_routes')
     })
     .should.be.rejectedWith(/No __exprest\.routes defined/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('invalid routes', function(done) {
+  it('invalid routes', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'invalid_routes')
     })
     .should.be.rejectedWith(/Invalid __exprest\.routes/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('unknown method', function(done) {
+  it('unknown method', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'unknown_method')
     })
     .should.be.rejectedWith(/Unknown method \"test\" in __exprest\.routes\[0\]\.method/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('no action defined', function(done) {
+  it('no action defined', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'no_action_def')
     })
     .should.be.rejectedWith(/No __exprest\.routes\[0\]\.action defined/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
-  it('no action implemented', function(done) {
+  it('no action implemented', (done) => {
     exprest.route(app, {
       controllers: path.join(ctrl_dir, 'no_action_imp')
     })
     .should.be.rejectedWith(/No view\(\) implemented/)
-    .then(function() { done(); }, done);
+    .then(() => { done(); }, done);
   });
 
 });
-

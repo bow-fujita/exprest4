@@ -6,7 +6,7 @@
 
 'use strict';
 
-var queue = [];
+let queue = [];
 
 module.exports = {
   __exprest: {
@@ -15,14 +15,14 @@ module.exports = {
     }
   }
 
-, dump: function(req, res) {
+, dump: (req, res) => {
     res.status(200).json({ action: 'dump', queue: queue });
   }
-, push: function(req, res) {
+, push: (req, res) => {
     queue.push(req.params.elem);
     res.status(200).json({ action: 'push', queue: queue });
   }
-, pop: function(req, res) {
+, pop: (req, res) => {
     queue.pop();
     res.status(200).json({ action: 'pop', queue: queue });
   }

@@ -27,19 +27,19 @@ module.exports = {
     }]
   }
 
-, list: function(req, res) {
+, list: (req, res) => {
     res.status(200).json({ action: 'list' });
   }
-, view: function(req, res) {
+, view: (req, res) => {
     res.status(200).json({ action: 'view', id: req.params.id });
   }
-, create: function(req, res) {
+, create: (req, res) => {
     res.status(200).json({ action: 'create' });
   }
-, update: function(req, res) {
+, update: (req, res) => {
     res.status(200).json({ action: 'update', id: req.params.id });
   }
-, remove: function(req, res) {
+, remove: (req, res) => {
     res.status(200).json({ action: 'remove', id: req.params.id });
   }
 };

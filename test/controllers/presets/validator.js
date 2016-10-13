@@ -6,8 +6,7 @@
 
 'use strict';
 
-var validator = require('validator')
-;
+const validator = require('validator');
 
 module.exports = {
   __exprest: {
@@ -28,7 +27,7 @@ module.exports = {
     }]
   }
 
-, validate: function(req, res) {
+, validate: (req, res) => {
     res.status(200).json({ id: req.params.id });
   }
 

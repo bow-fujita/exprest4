@@ -6,8 +6,7 @@
 
 'use strict';
 
-var passport = require('passport')
-;
+const passport = require('passport');
 
 module.exports = {
   __exprest: {
@@ -23,9 +22,8 @@ module.exports = {
     }]
   }
 
-, login: function(req, res) {
+, login: (req, res) => {
     res.status(200).json({ loginAs: req.user.username });
   }
 
 };
- 

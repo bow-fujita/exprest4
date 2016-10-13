@@ -6,8 +6,8 @@
 
 'use strict';
 
-var multer = require('multer')
-  , upload = multer()
+const multer = require('multer')
+    , upload = multer()
 ;
 
 module.exports = {
@@ -19,9 +19,8 @@ module.exports = {
     }]
   }
 
-, echo: function(req, res) {
+, echo: (req, res) => {
     res.status(200).json({ now: req.file.buffer.toString() });
   }
 
 };
- 

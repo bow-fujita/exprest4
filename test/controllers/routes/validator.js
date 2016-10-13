@@ -6,8 +6,7 @@
 
 'use strict';
 
-var validator = require('validator')
-;
+const validator = require('validator');
 
 module.exports = {
   __exprest: {
@@ -41,19 +40,19 @@ module.exports = {
     }]
   }
 
-, email: function(req, res) {
+, email: (req, res) => {
     res.status(200).json({ email: req.params.email });
   }
-, regexp: function(req, res) {
+, regexp: (req, res) => {
     res.status(200).json({ name: req.params.name });
   }
-, multi: function(req, res) {
+, multi: (req, res) => {
     res.status(200).json({
       id: req.params.id
     , flag: req.params.flag
     });
   }
-, dummy: function(req, res) {
+, dummy: (req, res) => {
     res.status(200).end();
   }
 
