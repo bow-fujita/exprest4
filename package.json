@@ -28,6 +28,7 @@
   "dependencies": {
     "methods": "^1.1.2",
     "path-to-regexp": "^1.6.0",
+    "sequelize": "^3.24.3",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
     "should": "^11.1.1",
+    "sqlite3": "^3.1.6",
     "supertest": "^2.0.0",
     "validator": "^6.0.0"
   },
