@@ -8,11 +8,15 @@ node_js:
 
 services:
   - mysql
+  - postgresql
 
 env:
   global:
     - EXPREST4_MYSQL_DB:   exprest4_test
     - EXPREST4_MYSQL_USER: travis
+    - EXPREST4_PGSQL_DB:   exprest4_test
+    - EXPREST4_PGSQL_USER: postgres
 
 before_script:
   - mysql -e "create database $EXPREST4_MYSQL_DB;"
+  - psql -c "create database $EXPREST4_PGSQL_DB;" -U $EXPREST4_PGSQL_USER

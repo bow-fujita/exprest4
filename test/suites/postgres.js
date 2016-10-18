@@ -10,20 +10,20 @@ const exprest = require(process.env.APP_ROOT)
     , path = require('path')
     , fs = require('fs')
     , model_dir = path.join(__dirname, '..', 'models')
-    , MYSQL_DB = process.env.EXPREST4_MYSQL_DB
-    , MYSQL_USER = process.env.EXPREST4_MYSQL_USER
-    , MYSQL_PASS = process.env.EXPREST4_MYSQL_PASS
+    , PGSQL_DB = process.env.EXPREST4_PGSQL_DB
+    , PGSQL_USER = process.env.EXPREST4_PGSQL_USER
+    , PGSQL_PASS = process.env.EXPREST4_PGSQL_PASS
 ;
 
-describe('mysql', () => {
+describe('postgres', () => {
 
   it('url', (done) => {
-    let credentials = MYSQL_USER;
-    if (MYSQL_PASS) {
-      credentials += `:${MYSQL_PASS}`;
+    let credentials = PGSQL_USER;
+    if (PGSQL_PASS) {
+      credentials += `:${PGSQL_PASS}`;
     }
 
-    exprest.model(model_dir, `mysql://${credentials}@localhost/${MYSQL_DB}`)
+    exprest.model(model_dir, `postgres://${credentials}@localhost/${PGSQL_DB}`)
     .then((sequelize) => {
       sequelize.models.should.have.property('project');
       return sequelize.models.project.sync();
@@ -40,9 +40,11 @@ describe('mysql', () => {
 
   it('object', (done) => {
     exprest.model(model_dir, {
-      database: MYSQL_DB
-    , username: MYSQL_USER || null
-    , password: MYSQL_PASS || null
+      database: PGSQL_DB
+    , username: PGSQL_USER || null
+    , password: PGSQL_PASS || null
+    }, {
+      dialect: 'postgres'
     })
     .then((sequelize) => {
       sequelize.models.should.have.property('project');

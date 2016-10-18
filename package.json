@@ -44,6 +44,7 @@
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
+    "pg": "^6.1.0",
     "should": "^11.1.1",
     "sqlite3": "^3.1.6",
     "supertest": "^2.0.0",
