@@ -39,6 +39,7 @@
     "mocha": "^3.1.2",
     "mocha-lcov-reporter": "^1.2.0",
     "multer": "^1.1.0",
+    "mysql": "^2.11.1",
     "node-inspector": "^0.12.8",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
