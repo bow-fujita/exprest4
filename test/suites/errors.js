@@ -102,16 +102,15 @@ describe('error', () => {
   }); // route
 
   describe('model', () => {
-    const model_dir = path.join(__dirname, '..', 'models');
 
     it('no dsn', (done) => {
-      exprest.model(model_dir)
-      .should.be.rejectedWith('Invalid data source name')
+      exprest.model({ models: path.join(__dirname, '..', 'models') })
+      .should.be.rejectedWith(/ER_ACCESS_DENIED_ERROR/)
       .then(() => { done(); }, done);
     });
 
     it('no models dir', (done) => {
-      exprest.model(null, 'sqlite:')
+      exprest.model({ uri: 'sqlite:' })
       .should.be.rejectedWith(/ENOENT/)
       .then(() => { done(); }, done);
     });

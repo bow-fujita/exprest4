@@ -17,13 +17,16 @@ const exprest = require(process.env.APP_ROOT)
 
 describe('mysql', () => {
 
-  it('url', (done) => {
+  it('uri', (done) => {
     let credentials = MYSQL_USER;
     if (MYSQL_PASS) {
       credentials += `:${MYSQL_PASS}`;
     }
 
-    exprest.model(model_dir, `mysql://${credentials}@localhost/${MYSQL_DB}`)
+    exprest.model({
+      models: model_dir
+    , uri: `mysql://${credentials}@localhost/${MYSQL_DB}`
+    })
     .then((sequelize) => {
       sequelize.models.should.have.property('project');
       return sequelize.models.project.sync();
@@ -38,11 +41,12 @@ describe('mysql', () => {
     .then(done, done);
   });
 
-  it('object', (done) => {
-    exprest.model(model_dir, {
-      database: MYSQL_DB
-    , username: MYSQL_USER || null
-    , password: MYSQL_PASS || null
+  it('options', (done) => {
+    exprest.model({
+      models: model_dir
+    , database: MYSQL_DB
+    , username: MYSQL_USER
+    , password: MYSQL_PASS
     })
     .then((sequelize) => {
       sequelize.models.should.have.property('project');

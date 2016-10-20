@@ -14,8 +14,11 @@ const exprest = require(process.env.APP_ROOT)
 
 describe('sqlite', () => {
 
-  it('url', (done) => {
-    exprest.model(model_dir, 'sqlite:')
+  it('uri', (done) => {
+    exprest.model({
+      models: model_dir
+    , uri: 'sqlite:'
+    })
     .then((sequelize) => {
       sequelize.models.should.have.property('project');
       return sequelize.models.project.sync();
@@ -30,8 +33,11 @@ describe('sqlite', () => {
     .then(done, done);
   });
 
-  it('object', (done) => {
-    exprest.model(model_dir, {}, { dialect: 'sqlite' })
+  it('options', (done) => {
+    exprest.model({
+      models: model_dir
+    , dialect: 'sqlite'
+    })
     .then((sequelize) => {
       sequelize.models.should.have.property('project');
       return sequelize.models.project.sync();

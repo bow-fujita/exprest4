@@ -17,13 +17,16 @@ const exprest = require(process.env.APP_ROOT)
 
 describe('postgres', () => {
 
-  it('url', (done) => {
+  it('uri', (done) => {
     let credentials = PGSQL_USER;
     if (PGSQL_PASS) {
       credentials += `:${PGSQL_PASS}`;
     }
 
-    exprest.model(model_dir, `postgres://${credentials}@localhost/${PGSQL_DB}`)
+    exprest.model({
+      models: model_dir
+    , uri: `postgres://${credentials}@localhost/${PGSQL_DB}`
+    })
     .then((sequelize) => {
       sequelize.models.should.have.property('project');
       return sequelize.models.project.sync();
@@ -38,13 +41,13 @@ describe('postgres', () => {
     .then(done, done);
   });
 
-  it('object', (done) => {
-    exprest.model(model_dir, {
-      database: PGSQL_DB
-    , username: PGSQL_USER || null
-    , password: PGSQL_PASS || null
-    }, {
-      dialect: 'postgres'
+  it('options', (done) => {
+    exprest.model({
+      models: model_dir
+    , database: PGSQL_DB
+    , username: PGSQL_USER
+    , password: PGSQL_PASS
+    , dialect: 'postgres'
     })
     .then((sequelize) => {
       sequelize.models.should.have.property('project');
