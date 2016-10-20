@@ -103,6 +103,12 @@ describe('error', () => {
 
   describe('model', () => {
 
+    it('no argument', (done) => {
+      exprest.model()
+      .should.be.rejectedWith(/ER_ACCESS_DENIED_ERROR/)
+      .then(() => { done(); }, done);
+    });
+
     it('no dsn', (done) => {
       exprest.model({ models: path.join(__dirname, '..', 'models') })
       .should.be.rejectedWith(/ER_ACCESS_DENIED_ERROR/)
@@ -112,6 +118,12 @@ describe('error', () => {
     it('no models dir', (done) => {
       exprest.model({ uri: 'sqlite:' })
       .should.be.rejectedWith(/ENOENT/)
+      .then(() => { done(); }, done);
+    });
+
+    it('unknown dialect', (done) => {
+      exprest.model({ uri: 'mongodb:' })
+      .should.be.rejectedWith(/not supported/)
       .then(() => { done(); }, done);
     });
 
