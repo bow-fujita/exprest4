@@ -17,9 +17,9 @@ module.exports = {
   }
 
 , top: (req, res) => {
-    res.status(200).json({ action: 'top' });
+    res.json({ action: 'top' });
   }
 , dashboard: (req, res) => {
-    res.status(200).json({ action: 'dashboard' });
+    res.json({ action: 'dashboard' });
   }
 };

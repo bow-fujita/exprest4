@@ -28,7 +28,7 @@ module.exports = {
   }
 
 , validate: (req, res) => {
-    res.status(200).json({ id: req.params.id });
+    res.json({ id: req.params.id });
   }
 
 };

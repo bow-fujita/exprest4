@@ -20,7 +20,7 @@ module.exports = {
   }
 
 , echo: (req, res) => {
-    res.status(200).json({ now: req.file.buffer.toString() });
+    res.json({ now: req.file.buffer.toString() });
   }
 
 };

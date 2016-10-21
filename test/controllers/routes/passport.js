@@ -23,7 +23,7 @@ module.exports = {
   }
 
 , login: (req, res) => {
-    res.status(200).json({ loginAs: req.user.username });
+    res.json({ loginAs: req.user.username });
   }
 
 };

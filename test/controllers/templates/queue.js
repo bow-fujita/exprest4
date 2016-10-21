@@ -16,14 +16,14 @@ module.exports = {
   }
 
 , dump: (req, res) => {
-    res.status(200).json({ action: 'dump', queue: queue });
+    res.json({ action: 'dump', queue: queue });
   }
 , push: (req, res) => {
     queue.push(req.params.elem);
-    res.status(200).json({ action: 'push', queue: queue });
+    res.json({ action: 'push', queue: queue });
   }
 , pop: (req, res) => {
     queue.pop();
-    res.status(200).json({ action: 'pop', queue: queue });
+    res.json({ action: 'pop', queue: queue });
   }
 };

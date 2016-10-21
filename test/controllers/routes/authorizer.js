@@ -19,7 +19,7 @@ module.exports = {
   }
 
 , authorize: (req, res, next) => {
-    res.status(200).json({ loginAs: (req.user || {}).username });
+    res.json({ loginAs: (req.user || {}).username });
   }
 
 };

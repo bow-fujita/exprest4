@@ -28,18 +28,18 @@ module.exports = {
   }
 
 , list: (req, res) => {
-    res.status(200).json({ action: 'list' });
+    res.json({ action: 'list' });
   }
 , view: (req, res) => {
-    res.status(200).json({ action: 'view', id: req.params.id });
+    res.json({ action: 'view', id: req.params.id });
   }
 , create: (req, res) => {
-    res.status(200).json({ action: 'create' });
+    res.json({ action: 'create' });
   }
 , update: (req, res) => {
-    res.status(200).json({ action: 'update', id: req.params.id });
+    res.json({ action: 'update', id: req.params.id });
   }
 , remove: (req, res) => {
-    res.status(200).json({ action: 'remove', id: req.params.id });
+    res.json({ action: 'remove', id: req.params.id });
   }
 };

@@ -41,19 +41,19 @@ module.exports = {
   }
 
 , email: (req, res) => {
-    res.status(200).json({ email: req.params.email });
+    res.json({ email: req.params.email });
   }
 , regexp: (req, res) => {
-    res.status(200).json({ name: req.params.name });
+    res.json({ name: req.params.name });
   }
 , multi: (req, res) => {
-    res.status(200).json({
+    res.json({
       id: req.params.id
     , flag: req.params.flag
     });
   }
 , dummy: (req, res) => {
-    res.status(200).end();
+    res.end();
   }
 
 };

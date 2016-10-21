@@ -25,7 +25,7 @@ module.exports = {
   }
 
 , echo: (req, res) => {
-    res.status(200).json({
+    res.json({
       loginAs: req.user.username
     , now: req.file.buffer.toString()
     });
