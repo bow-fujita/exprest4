@@ -1,7 +1,7 @@
 {
   "name": "exprest4",
-  "version": "0.9.8",
-  "description": "REST API framework for Express 4.x.",
+  "version": "1.0.0",
+  "description": "REST API framework using Express 4.x and Sequelize.",
   "homepage": "https://github.com/bow-fujita/exprest4",
   "repository": {
     "type": "git",
@@ -16,11 +16,18 @@
   },
   "keywords": [
     "express",
+    "sequelize",
     "restful",
     "rest",
     "api",
     "controller",
-    "mvc"
+    "model",
+    "mvc",
+    "sqlite",
+    "mysql",
+    "postgres",
+    "mssql",
+    "mariadb"
   ],
   "engines": {
     "node": ">= 4.0"
