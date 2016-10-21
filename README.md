@@ -10,13 +10,18 @@
 Yet another RESTful API framework for [Express](http://expressjs.com/) 4.x.
 
 
-## Getting started
+## Install
 
 ```sh
 $ npm install exprest4
 ```
 
 Note that you have to `npm install express` as well because `exprest4` doesn't install Express 4.x by itself.
+
+
+## Getting started
+
+### Controllers
 
 Make `controllers` directory and code your Express application.
 
@@ -28,13 +33,15 @@ $ vim app.js
 ```javascript
 // app.js
 
-var express = require('express')
-  , exprest = require('exprest4')
-  , app = express()
+'use strict';
+
+const express = require('express')
+    , exprest = require('exprest4')
+    , app = express()
 ;
 
 exprest.route(app, { url: '/api' })
-.then(function() {
+.then(() => {
   app.listen();
 });
 ```
@@ -44,6 +51,8 @@ Each controller module must have the special property `__exprest` as follow:
 
 ```javascript
 // controllers/example.js
+
+'use strict';
 
 module.exports = {
   __exprest: {
@@ -66,20 +75,24 @@ module.exports = {
     }]
   }
 
-, list: function(req, res) {
-    res.status(200).json({ action: 'list' });
+, list: (req, res) => {
+    res.json({ action: 'list' });
   }
-, view: function(req, res) {
-    res.status(200).json({ action: 'view', id: req.params.id });
+
+, view: (req, res) => {
+    res.json({ action: 'view', id: req.params.id });
   }
-, create: function(req, res) {
-    res.status(200).json({ action: 'create' });
+
+, create: (req, res) => {
+    res.json({ action: 'create' });
   }
-, update: function(req, res) {
-    res.status(200).json({ action: 'update', id: req.params.id });
+
+, update: (req, res) => {
+    res.json({ action: 'update', id: req.params.id });
   }
-, remove: function(req, res) {
-    res.status(200).json({ action: 'remove', id: req.params.id });
+
+, remove: (req, res) => {
+    res.json({ action: 'remove', id: req.params.id });
   }
 };
 ```
@@ -87,13 +100,141 @@ module.exports = {
 The code implemented in `controllers/example.js` is equivalent to the following Express calls:
 
 ```javascript
-var example = require('./controllers/example');
+'use strict';
+
+const example = require('./controllers/example');
 
 app.get('/api/example', example.list);
 app.get('/api/example/:id', example.view);
 app.post('/api/example', example.create);
 app.put('/api/example/:id', example.update);
 app.delete('/api/example/:id', example.remove);
+```
+
+## Models
+
+If your application works with a database, `exprest4` also allows you to define models by using [Sequelize](http://sequelizejs.com).
+Make `models` directory and add to call `model()` as follows:
+
+```sh
+$ mkdir models
+$ vim app.js
+```
+
+`exprest4` regards each file/directory under the `models` directory as a model module [in manner of Sequelize](http://docs.sequelizejs.com/en/v3/docs/models-definition/#import), and loads all models into a Sequelize instance upon `model()` call.
+
+```javascript
+// models/project.js
+
+'use strict';
+
+module.exports = (sequelize, DataTypes) => {
+  return sequelize.define('project', {
+    title: DataTypes.STRING
+  , description: DataTypes.TEXT
+  });
+};
+
+
+// app.js
+
+'use strict';
+
+const express = require('express')
+    , exprest = require('exprest4')
+    , app = express()
+;
+
+exprest.route(app, { url: '/api' })
+.then(() => exprest.model({ dialect: 'sqlite' })) // Use SQLite with memory storage
+.then((sequelize) => {
+  app.locals.models = sequelize.models; // Save the models for controllers
+  return sequelize.sync();
+})
+.then(() => {
+  app.listen();
+});
+```
+
+`model()` returns `Promise` with a Sequelize instance.
+
+It's a good idea to save the models as `app.locals.models` as above code in `app.js`, so that each controller can access to the models through `req.app.locals.models` as the following code:
+
+```javascript
+// controllers/project.js
+
+'use strict';
+
+function project(req)
+{
+  return req.app.locals.models.project;
+}
+
+module.exports = {
+  __exprest: {
+    routes: [{
+      action: 'list'
+    }, {
+      action: 'view'
+    , path: ':id'
+    }, {
+      action: 'create'
+    , method: 'post'
+    }, {
+      action: 'update'
+    , path: ':id'
+    , method: 'put'
+    }, {
+      action: 'remove'
+    , path: ':id'
+    , method: 'delete'
+    }]
+  }
+
+, list: (req, res, next) => {
+    project().findAll()
+    .then((rows) => { res.json(rows); })
+    .catch(next);
+  }
+
+, view: (req, res, next) => {
+    project().findById(req.params.id)
+    .then((row) => { row ? res.json(row) : res.status(404); })
+    .catch(next);
+  }
+
+, create: (req, res, next) => {
+    project().create({
+      title: req.body.title
+    , description: req.body.description
+    })
+    .then((row) => { res.json(row); })
+    .catch(next);
+  }
+
+, update: (req, res, next) => {
+    project().findById(req.params.id)
+    .then((row) => {
+      if (!row) {
+        res.status(404);
+        return Promise.resolve();
+      }
+      return row.update({
+        title: req.body.title
+      , description: req.body.description
+      });
+    })
+    .then(() => { res.end(); });
+    .catch(next);
+  }
+
+, remove: (req, res, next) => {
+    project().findById(req.params.id)
+    .then((row) => row ? row.destroy() : Promise.resolve())
+    .then(() => { res.end(); });
+    .catch(next);
+  }
+};
 ```
 
 
@@ -132,23 +273,25 @@ For example, if you want to seperate APIs by version like `/api/v1/<controllers>
 ```javascript
 // app.js
 
-var path = require('path')
-  , express = require('express')
-  , exprest = require('exprest4')
-  , app = express()
-  , api_versions = [1, 2]
-  , controllers_dir = path.join(process.cwd(), 'controllers')
+'use strict';
+
+const path = require('path')
+    , express = require('express')
+    , exprest = require('exprest4')
+    , app = express()
+    , api_versions = [1, 2]
+    , controllers_dir = path.join(process.cwd(), 'controllers')
 ;
 
 Promise.all(
-  api_versions.map(function(version) {
+  api_versions.map((version) => {
     return exprest.route(app, {
              url: '/api/v'+version
            , controllers: path.join(controllers_dir, 'v'+version)
            });
   })
 )
-.then(function() {
+.then(() => {
   app.listen();
 });
 ```
@@ -160,21 +303,49 @@ The following example uses [connect-ensure-login](https://github.com/jaredhanson
 ```javascript
 // app.js
 
-var path = require('path')
-  , express = require('express')
-  , exprest = require('exprest4')
-  , app = express()
-  , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
+'use strict';
+
+const path = require('path')
+    , express = require('express')
+    , exprest = require('exprest4')
+    , app = express()
+    , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
 ;
 
 exprest.route(app, {
     url: '/api'
   , authorizer: ensureLoggedIn('/login')
 })
-.then(function() {
+.then(() => {
   app.listen();
 });
 ```
+
+
+### `model([opts]) -> Promise`
+
+`exprest` loads models through Sequelize.
+
+`opts` is an object which may have the following properties:
+
++ **`models`: String [Default: `path.join(process.cwd(), 'models')`]<br>**
+  Physical path to where models are implemented.
+
++ **`database`: String [Default: `undefined`]**<br>
+  Virtual path prefix for the `controllers`.
+
++ **`username`: String [Default: `undefined`]**<br>
+  Controller's name which will be mapped directly onto `url`.
+
++ **`password`: String [Default: `undefined`]**<br>
+  Middleware for user authorization.
+
+At first, `model()` connects to a database by calling [`Sequelize.authenticate()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#authenticate-promise).
+Then each model module implemented in `opts.models` directory will be imported into a Sequelize instance.
+The Sequelize instance will be returned with `Promise` upon success.
+
+`opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
+Other options are also passed through to `options`, the 4th arugment of Sequelize's constructor.
 
 
 ## `__exprest` Property
@@ -226,8 +397,9 @@ If `routes[].path` contains any placeholders to receive parameters from [`req.pa
 The following example uses [validator.js](https://github.com/chriso/validator.js) as `validator`:
 
 ```javascript
-var validator = require('validator')
-;
+const validator = require('validator');
+
+'use strict';
 
 module.exports = {
   __exprest: {
@@ -240,15 +412,17 @@ module.exports = {
     }]
   }
 
-, view: function(req, res) {
+, view: (req, res) => {
     // `req.params.id` must a number.
-    res.status(200).json({ id: req.params.id });
+    res.json({ id: req.params.id });
   }
 ```
 
 You can also use a `RegExp` object instead of a function as follow:
 
 ```javascript
+'use strict';
+
 module.exports = {
   __exprest: {
     routes: [{
@@ -260,17 +434,18 @@ module.exports = {
     }]
   }
 
-, view: function(req, res) {
+, view: (req, res) => {
     // `req.params.id` must a number.
-    res.status(200).json({ id: req.params.id });
+    res.json({ id: req.params.id });
   }
 ```
 
 If you have a placeholder commonly used in a controller, you can use `preset.validator` as follow:
 
 ```javascript
-var validator = require('validator')
-;
+'use strict';
+
+const validator = require('validator');
 
 module.exports = {
   __exprest: {
@@ -293,14 +468,16 @@ module.exports = {
     }]
   }
 
-, view: function(req, res) {
-    res.status(200).json({ action: 'view', id: req.params.id });
+, view: (req, res) => {
+    res.json({ action: 'view', id: req.params.id });
   }
-, update: function(req, res) {
-    res.status(200).json({ action: 'update', id: req.params.id });
+
+, update: (req, res) => {
+    res.json({ action: 'update', id: req.params.id });
   }
-, remove: function(req, res) {
-    res.status(200).json({ action: 'remove', id: req.params.id });
+
+, remove: (req, res) => {
+    res.json({ action: 'remove', id: req.params.id });
   }
 };
 ```
@@ -311,8 +488,10 @@ module.exports = {
 The following example uses [Multer](https://github.com/expressjs/multer) as `middleware`:
 
 ```javascript
-var multer = require('multer')
-  , upload = multer(/* memory storage */)
+'use strict';
+
+const multer = require('multer')
+    , upload = multer(/* memory storage */)
 ;
 
 module.exports = {
@@ -324,8 +503,8 @@ module.exports = {
     }]
   }
 
-, echo: function(req, res) {
-    res.status(200).json({ echo: req.file.buffer.toString() });
+, echo: (req, res) => {
+    res.json({ echo: req.file.buffer.toString() });
   }
 };
  ```
@@ -334,8 +513,9 @@ Another use case is authentication.
 The following example uses [Passport](https://github.com/jaredhanson/passport) as `middleware`:
 
 ```javascript
-var passport = require('passport')
-;
+'use strict';
+
+const passport = require('passport');
 
 module.exports = {
   __exprest: {
@@ -345,8 +525,8 @@ module.exports = {
     }]
   }
 
-, login: function(req, res) {
-    res.status(200).json({ loginAs: req.user.username });
+, login: (req, res) => {
+    res.json({ loginAs: req.user.username });
   }
 };
  ```
@@ -354,9 +534,11 @@ module.exports = {
 If you want to authenticate users for every action in a controller, you can use `preset.middleware` as follow:
 
 ```javascript
-var passport = require('passport')
-  , multer = require('multer')
-  , upload = multer(/* memory storage */)
+'use strict';
+
+const passport = require('passport')
+    , multer = require('multer')
+    , upload = multer(/* memory storage */)
 ;
 
 module.exports = {
@@ -373,12 +555,12 @@ module.exports = {
     }]
   }
 
-, login: function(req, res) {
-    res.status(200).json({ loginAs: req.user.username });
+, login: (req, res) => {
+    res.json({ loginAs: req.user.username });
   }
 
-, echo: function(req, res) {
-    res.status(200).json({ echo: req.file.buffer.toString() });
+, echo: (req, res) => {
+    res.json({ echo: req.file.buffer.toString() });
   }
 };
 ```
@@ -392,19 +574,21 @@ The following example shows how to use template:
 ```javascript
 // app.js
 
-var express = require('express')
-  , exprest = require('exprest4')
-  , app = express()
-  , templates = {
-      queue: [{
-        action: 'push'
-      , path:   ':elem'
-      , method: 'post'
-      }, {
-        action: 'pop'
-      , method: 'delete'
-      }]
-    }
+'use strict';
+
+const express = require('express')
+    , exprest = require('exprest4')
+    , app = express()
+    , templates = {
+        queue: [{
+          action: 'push'
+        , path:   ':elem'
+        , method: 'post'
+        }, {
+          action: 'pop'
+        , method: 'delete'
+        }]
+      }
 ;
 
 exprest.route(app, { templates: templates })
@@ -412,7 +596,10 @@ exprest.route(app, { templates: templates })
 
 ```javascript
 // controllers/seat.js
-var waiting_list = [];
+
+'use strict';
+
+let waiting_list = [];
 
 module.exports = {
   __exprest: {
@@ -422,13 +609,14 @@ module.exports = {
     // No routes required here.
   }
 
-, push: function(req, res) {
+, push: (req, res) => {
     waiting_list.push(req.params.elem);
-    res.status(200).json(waiting_list);
+    res.json(waiting_list);
   }
-, pop: function(req, res) {
+
+, pop: (req, res) => {
     waiting_list.pop();
-    res.status(200).json(waiting_list);
+    res.json(waiting_list);
   }
 };
 ```
