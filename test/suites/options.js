@@ -16,7 +16,7 @@ const exprest = require(process.env.APP_ROOT)
 
 describe('options', () => {
 
-  it('logger', (done) => {
+  it('logging', (done) => {
     const app = express()
         , expected_logs = [
             '[exprest4] app.get("/user") loaded.'
@@ -31,7 +31,7 @@ describe('options', () => {
 
     exprest.route(app, {
       controllers: ctrl_dir
-    , logger: (msg) => {
+    , logging: (msg) => {
         actual_logs.push(msg);
       }
     })
@@ -46,7 +46,7 @@ describe('options', () => {
         });
     });
 
-  }); // logger
+  }); // logging
 
   describe('index', () => {
     const app = express();
@@ -56,7 +56,7 @@ describe('options', () => {
         controllers: ctrl_dir
       , index: 'user'
       })
-      .then(() => { done(); }, done);
+      .then(() => done(), done);
     });
 
     // Check if user controller mapped onto /
@@ -86,7 +86,7 @@ describe('options', () => {
         controllers: ctrl_dir
       , authorizer: passport.authenticate('basic', { session: false })
       })
-      .then(() => { done(); }, done);
+      .then(() => done(), done);
     });
 
     it('GET /authorizer/private no user', (done) => {

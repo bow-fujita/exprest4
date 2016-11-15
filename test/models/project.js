@@ -6,9 +6,11 @@
 
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes, schema) => {
   return sequelize.define('project', {
     title: DataTypes.STRING
   , description: DataTypes.TEXT
+  }, {
+    schema: schema
   });
 };

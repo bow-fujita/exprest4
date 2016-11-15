@@ -88,7 +88,7 @@ describe('presets', () => {
 
     before((done) => {
       exprest.route(app, { controllers: ctrl_dir })
-      .then(() => { done(); }, done);
+      .then(() => done(), done);
     });
 
     describe('GET /validator', () => {
@@ -129,7 +129,7 @@ describe('presets', () => {
         controllers: ctrl_dir
       , authorizer: passport.authenticate('basic', { session: false })
       })
-      .then(() => { done(); }, done);
+      .then(() => done(), done);
     });
 
     it('GET /authorizer/private no user', (done) => {

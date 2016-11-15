@@ -20,7 +20,7 @@ describe('validators', () => {
 
   before((done) => {
     exprest.route(app, { controllers: ctrl_dir })
-    .then(() => { done(); }, done);
+    .then(() => done(), done);
   });
 
   describe('GET /validator/email', () => {

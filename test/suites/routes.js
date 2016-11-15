@@ -22,7 +22,7 @@ describe('routes', () => {
 
     before((done) => {
       exprest.route(app, { controllers: ctrl_dir })
-      .then(() => { done(); }, done);
+      .then(() => done(), done);
     });
 
     // Check if index controller routed properly
@@ -105,7 +105,7 @@ describe('routes', () => {
 
     before((done) => {
       exprest.route(app, { controllers: ctrl_dir, url: '/api' })
-      .then(() => { done(); }, done);
+      .then(() => done(), done);
     });
 
     // Check if index controller routed properly
