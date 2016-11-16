@@ -111,7 +111,7 @@ app.put('/api/example/:id', example.update);
 app.delete('/api/example/:id', example.remove);
 ```
 
-## Models
+### Models
 
 If your application works with a database, `exprest4` also allows you to define models by using [Sequelize](http://sequelizejs.com).
 Make `models` directory and add to call `model()` as follows:
@@ -242,7 +242,7 @@ module.exports = {
 
 ### `route(app[, opts]) -> Promise`
 
-`exprest` routes controller modules for `app` which must be an Express instance.
+Routes controller modules for `app` which must be an Express instance.
 
 `opts` is an object which may have the following properties:
 
@@ -324,7 +324,7 @@ exprest.route(app, {
 
 ### `model([opts]) -> Promise`
 
-`exprest` loads models through Sequelize.
+Imports models into a Sequelize instance.
 
 `opts` is an object which may have the following properties:
 
@@ -332,20 +332,90 @@ exprest.route(app, {
   Physical path to where models are implemented.
 
 + **`database`: String [Default: `undefined`]**<br>
-  Virtual path prefix for the `controllers`.
+  Database name.
 
 + **`username`: String [Default: `undefined`]**<br>
-  Controller's name which will be mapped directly onto `url`.
+  Username for database authentication.
 
 + **`password`: String [Default: `undefined`]**<br>
-  Middleware for user authorization.
+  Password for database authentication.
 
-At first, `model()` connects to a database by calling [`Sequelize.authenticate()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#authenticate-promise).
-Then each model module implemented in `opts.models` directory will be imported into a Sequelize instance.
+Each model module implemented in `opts.models` directory will be imported into a Sequelize instance after connection to a database is established.
 The Sequelize instance will be returned with `Promise` upon success.
 
 `opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
 Other options are also passed through to `options`, the 4th arugment of Sequelize's constructor.
+
+
+### `model.connect([opts]) -> Promise`
+
+Connects to a database through Sequelize by calling [`Sequelize.authenticate()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#authenticate-promise).
+
+`opts` is an object which may have the following properties:
+
++ **`database`: String [Default: `undefined`]**<br>
+  Database name.
+
++ **`username`: String [Default: `undefined`]**<br>
+  Username for database authentication.
+
++ **`password`: String [Default: `undefined`]**<br>
+  Password for database authentication.
+
+The Sequelize instance will be returned with `Promise` upon success.
+
+Each property of `opts` is passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
+Other options are also passed through to `options`, the 4th arugment of Sequelize's constructor.
+
+
+### `model.sync([opts]) -> Promise`
+
+Synchronizes all defined models to a database.
+
+`opts` is an object which may have the following properties:
+
++ **`models`: String [Default: `path.join(process.cwd(), 'models')`]<br>**
+  Physical path to where models are implemented.
+
++ **`database`: String [Default: `undefined`]**<br>
+  Database name.
+
++ **`schema`: String [Default: `undefined`]**<br>
+  Schema name.
+
++ **`username`: String [Default: `undefined`]**<br>
+  Username for database authentication.
+
++ **`password`: String [Default: `undefined`]**<br>
+  Password for database authentication.
+
+The Sequelize instance will be returned with `Promise` upon success.
+
+`opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
+Other options are also passed through to `options` of both Sequelize's constructor and [`Sequelize.sync()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#syncoptions-promise).
+
+Note that this function is equivalent to `Sequelize.sync()` unless Sequelize connects to PostgreSQL database.
+There is an issue in `Sequelize.sync()` for PostgreSQL, even if `options.schema` is specified, no schema is prepended to table names while executing `dropTable()`.
+So that the tables under the `public` schema with the same names as your models might be dropped unintentionally by `Sequelize.sync()`.
+This function provides workaround for the issue.
+
+`opts.schema` is passed to each model module implemented in `opts.models` directory as the third argument.
+The model modules have to pass the `schema` as `options.schema` to [`Sequelize.define()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) as the following example:
+
+```javascript
+// models/project.js
+
+'use strict';
+
+module.exports = (sequelize, DataTypes, schema) => {
+  return sequelize.define('project', {
+    title: DataTypes.STRING
+  , description: DataTypes.TEXT
+  }, {
+    schema: schema
+  });
+};
+```
 
 
 ## `__exprest` Property
