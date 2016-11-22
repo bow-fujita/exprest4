@@ -342,6 +342,8 @@ Imports models into a Sequelize instance.
 
 Each model module implemented in `opts.models` directory will be imported into a Sequelize instance after connection to a database is established.
 The Sequelize instance will be returned with `Promise` upon success.
+If a model module has `associate()` as a part of `classMethods`, it will be called with `sequelize.models` as its argument after all models are loaded.
+So that it allows you to define [associations](http://docs.sequelizejs.com/en/v3/docs/associations/) between models.
 
 `opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
 Other options are also passed through to `options`, the 4th arugment of Sequelize's constructor.
