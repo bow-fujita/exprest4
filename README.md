@@ -192,19 +192,19 @@ module.exports = {
   }
 
 , list: (req, res, next) => {
-    project().findAll()
+    project(req).findAll()
     .then((rows) => { res.json(rows); })
     .catch(next);
   }
 
 , view: (req, res, next) => {
-    project().findById(req.params.id)
+    project(req).findById(req.params.id)
     .then((row) => { row ? res.json(row) : res.status(404); })
     .catch(next);
   }
 
 , create: (req, res, next) => {
-    project().create({
+    project(req).create({
       title: req.body.title
     , description: req.body.description
     })
@@ -213,7 +213,7 @@ module.exports = {
   }
 
 , update: (req, res, next) => {
-    project().findById(req.params.id)
+    project(req).findById(req.params.id)
     .then((row) => {
       if (!row) {
         res.status(404);
@@ -229,7 +229,7 @@ module.exports = {
   }
 
 , remove: (req, res, next) => {
-    project().findById(req.params.id)
+    project(req).findById(req.params.id)
     .then((row) => row ? row.destroy() : Promise.resolve())
     .then(() => { res.end(); });
     .catch(next);
