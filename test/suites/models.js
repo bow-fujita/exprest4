@@ -19,13 +19,13 @@ describe('models', () => {
 
     it('no argument', (done) => {
       exprest.model()
-      .should.be.rejectedWith(/ER_ACCESS_DENIED_ERROR/)
+      .should.be.rejectedWith(/Access denied/)
       .then(() => done(), done);
     });
 
     it('no dsn', (done) => {
       exprest.model({ models: model_dir })
-      .should.be.rejectedWith(/ER_ACCESS_DENIED_ERROR/)
+      .should.be.rejectedWith(/Access denied/)
       .then(() => done(), done);
     });
 
@@ -60,7 +60,7 @@ describe('models', () => {
       exprest.model.connect({
         database: process.env.EXPREST4_MYSQL_DB
       })
-      .should.be.rejectedWith(/ER_ACCESS_DENIED_ERROR/)
+      .should.be.rejectedWith(/Access denied/)
       .then(() => done(), done);
     });
 
