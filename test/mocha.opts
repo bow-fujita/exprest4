@@ -3,3 +3,4 @@
 --require should
 --timeout 1000
 --slow 300
+--exit
