@@ -14,6 +14,9 @@ services:
   - mysql
   - postgresql
 
+addons:
+  postgresql: "9.3"
+
 env:
   global:
     - EXPREST4_MYSQL_DB:   exprest4_test
