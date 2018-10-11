@@ -30,7 +30,7 @@
     "mariadb"
   ],
   "engines": {
-    "node": ">= 4.0"
+    "node": ">= 6.0"
   },
   "dependencies": {
     "methods": "^1.1.2",
