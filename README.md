@@ -121,7 +121,7 @@ $ mkdir models
 $ vim app.js
 ```
 
-`exprest4` regards each file/directory under the `models` directory as a model module [in manner of Sequelize](http://docs.sequelizejs.com/en/v3/docs/models-definition/#import), and loads all models into a Sequelize instance upon `model()` call.
+`exprest4` regards each file/directory under the `models` directory as a model module [in manner of Sequelize](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#import), and loads all models into a Sequelize instance upon `model()` call.
 
 ```javascript
 // models/project.js
@@ -343,15 +343,15 @@ Imports models into a Sequelize instance.
 Each model module implemented in `opts.models` directory will be imported into a Sequelize instance after connection to a database is established.
 The Sequelize instance will be returned with `Promise` upon success.
 If a model module has `associate()` as a part of `classMethods`, it will be called with `sequelize.models` as its argument after all models are loaded.
-So that it allows you to define [associations](http://docs.sequelizejs.com/en/v3/docs/associations/) between models.
+So that it allows you to define [associations](http://docs.sequelizejs.com/manual/tutorial/associations.html) between models.
 
-`opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
+`opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor).
 Other options are also passed through to `options`, the 4th arugment of Sequelize's constructor.
 
 
 ### `model.connect([opts]) -> Promise`
 
-Connects to a database through Sequelize by calling [`Sequelize.authenticate()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#authenticate-promise).
+Connects to a database through Sequelize by calling [`Sequelize.authenticate()`](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-method-authenticate).
 
 `opts` is an object which may have the following properties:
 
@@ -366,7 +366,7 @@ Connects to a database through Sequelize by calling [`Sequelize.authenticate()`]
 
 The Sequelize instance will be returned with `Promise` upon success.
 
-Each property of `opts` is passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
+Each property of `opts` is passed to [Sequelize's constructor](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor).
 Other options are also passed through to `options`, the 4th arugment of Sequelize's constructor.
 
 
@@ -393,8 +393,8 @@ Synchronizes all defined models to a database.
 
 The Sequelize instance will be returned with `Promise` upon success.
 
-`opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/en/v3/api/sequelize/#class-sequelize).
-Other options are also passed through to `options` of both Sequelize's constructor and [`Sequelize.sync()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#syncoptions-promise).
+`opts.database`, `opts.username` and `opts.password` are passed to [Sequelize's constructor](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor).
+Other options are also passed through to `options` of both Sequelize's constructor and [`Sequelize.sync()`](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-method-sync).
 
 Note that this function is equivalent to `Sequelize.sync()` unless Sequelize connects to PostgreSQL database.
 There is an issue in `Sequelize.sync()` for PostgreSQL, even if `options.schema` is specified, no schema is prepended to table names while executing `dropTable()`.
@@ -402,7 +402,7 @@ So that the tables under the `public` schema with the same names as your models 
 This function provides workaround for the issue.
 
 `opts.schema` is passed to each model module implemented in `opts.models` directory as the third argument.
-The model modules have to pass the `schema` as `options.schema` to [`Sequelize.define()`](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) as the following example:
+The model modules have to pass the `schema` as `options.schema` to [`Sequelize.define()`](http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-method-define) as the following example:
 
 ```javascript
 // models/project.js
@@ -723,7 +723,7 @@ In addition, `routes` which has exactly the same `method` and `path` overwrites 
 
 **The MIT License (MIT)**
 
-Copyright (c) 2016 Hiromitsu Fujita <bow.fujita@gmail.com>
+Copyright (c) 2016-2018 Hiromitsu Fujita <bow.fujita@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
