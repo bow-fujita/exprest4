@@ -1,6 +1,6 @@
 /*!
  * exprest4
- * Copyright (c) 2016 Hiromitsu Fujita <bow.fujita@gmail.com>
+ * Copyright (c) 2016-2018 Hiro Fujita <bow.fujita@gmail.com>
  * MIT License
  */
 
@@ -52,7 +52,7 @@ describe('routes', () => {
       request(app).get('/user/1')
         .expect(200, {
           action: 'view'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -67,7 +67,7 @@ describe('routes', () => {
       request(app).put('/user/1')
         .expect(200, {
           action: 'update'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -75,7 +75,7 @@ describe('routes', () => {
       request(app).delete('/user/1')
         .expect(200, {
           action: 'remove'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -135,7 +135,7 @@ describe('routes', () => {
       request(app).get('/api/user/1')
         .expect(200, {
           action: 'view'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -150,7 +150,7 @@ describe('routes', () => {
       request(app).put('/api/user/1')
         .expect(200, {
           action: 'update'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -158,7 +158,7 @@ describe('routes', () => {
       request(app).delete('/api/user/1')
         .expect(200, {
           action: 'remove'
-        , id: 1
+        , id: '1'
         }, done);
     });
 

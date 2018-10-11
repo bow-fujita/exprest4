@@ -1,6 +1,6 @@
 /*!
  * exprest4
- * Copyright (c) 2016 Hiromitsu Fujita <bow.fujita@gmail.com>
+ * Copyright (c) 2016-2018 Hiro Fujita <bow.fujita@gmail.com>
  * MIT License
  */
 
@@ -95,7 +95,7 @@ describe('presets', () => {
       it('valid', (done) => {
         request(app).get('/validator/123')
           .expect(200, {
-            id: 123
+            id: '123'
           }, done);
       });
 

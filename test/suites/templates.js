@@ -1,6 +1,6 @@
 /*!
  * exprest4
- * Copyright (c) 2016 Hiromitsu Fujita <bow.fujita@gmail.com>
+ * Copyright (c) 2016-2018 Hiro Fujita <bow.fujita@gmail.com>
  * MIT License
  */
 
@@ -51,7 +51,7 @@ describe('templates', () => {
       request(app).get('/crud/1')
         .expect(200, {
           action: 'view'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -66,7 +66,7 @@ describe('templates', () => {
       request(app).put('/crud/1')
         .expect(200, {
           action: 'update'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -74,7 +74,7 @@ describe('templates', () => {
       request(app).delete('/crud/1')
         .expect(200, {
           action: 'remove'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -117,7 +117,7 @@ describe('templates', () => {
       request(app).put('/extend/1')
         .expect(200, {
           action: 'update'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -125,7 +125,7 @@ describe('templates', () => {
       request(app).delete('/extend/1')
         .expect(200, {
           action: 'remove'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
@@ -142,7 +142,7 @@ describe('templates', () => {
       request(app).get('/extend/1')
         .expect(200, {
           action: 'show'
-        , id: 1
+        , id: '1'
         }, done);
     });
 
