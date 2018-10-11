@@ -64,6 +64,12 @@ describe('models', () => {
       .then(() => done(), done);
     });
 
+    it('no argument', (done) => {
+      exprest.model.connect()
+      .should.be.rejectedWith(/Access denied/)
+      .then(() => done(), done);
+    });
+
   }); // connect
 
   describe('sqlite', () => {
